@@ -1,4 +1,5 @@
 import { SafeAreaView, Dimensions, View, Image, TextInput, TouchableOpacity, Text, Animated, ScrollView } from 'react-native';
+import { Camera } from 'react-native-vision-camera';
 import styled from 'styled-components';
 import { IStyledProps, defaultProps } from './IStyled';
 
@@ -16,7 +17,7 @@ export const FloatPage = styled(Animated.ScrollView) <IStyledProps>`
     width: ${windowWidth}px;
     min-height: ${windowHeight / (4 / 3)}px;
     top: ${windowHeight / 4}px;
-    bottom: 0;
+    bottom: 0px;
 `;
 
 export const PageTitleView = styled(View) <IStyledProps>`
@@ -37,14 +38,21 @@ export const FlipPageButton = styled(TouchableOpacity) <IStyledProps>`
     width: 65px;
     height: 65px;
     background-color: #232323;
+    border: 1px solid #D4AF00;
     border-radius: 100px;
     display: flex;
     flex-direction: row;
     justify-content: center;
+    margin-top: ${props => props.mgTop ? props.mgTop : 0}px;
+    margin-left: ${props => props.mgLeft ? props.mgLeft : 0}px;
+    margin-right: ${props => props.mgRight ? props.mgRight : 0}px;
     align-items: center;
+    ${props => props.disabled ? `
+        background-color: #222222;
+    ` : ``}
 `;
 
-export const Scrollable = styled(ScrollView)<IStyledProps>`
+export const Scrollable = styled(ScrollView) <IStyledProps>`
     flex: 1;
 `;
 
@@ -94,7 +102,7 @@ ${props => props.login ? `
     border: 1px solid ${props.letter ? props.letter : defaultProps.letter};
     border-radius: 20px;
     background-color: ${props.background ? props.background : defaultProps.item};
-    color: ${props.letter ? props.letter : "gold"};
+    color: ${props.letter ? props.letter : "#D4AF00"};
     display: flex;
     flex-direction: row;
     margin-bottom: 20px;
@@ -104,7 +112,7 @@ ${props => props.login ? `
     width: ${props.segments ? `${(100 / props.segments) - 15}` : "80"}%;
     height: 40px;
     margin-left: 10%;
-    color: ${props.letter ? props.letter : "gold"};
+    color: ${props.letter ? props.letter : "#D4AF00"};
     display: flex;
     flex-direction: column;
     margin-bottom: 50px;`
@@ -144,14 +152,14 @@ ${props => props.login ? `
     height: 100%
     border: none;
     background-color: inherit;
-    color: gold;
+    color: #D4AF00;
     border-top-right-radius: 20px;
     border-bottom-right-radius: 20px;
     ` : `
     border: 1px solid ${props.letter ? props.letter : defaultProps.letter};
     border-radius: 10px;
     background-color: ${props.background ? props.background : defaultProps.item};
-    color: gold;
+    color: #D4AF00;
     `
     }
 `;
@@ -171,13 +179,18 @@ export const SubmitButton = styled(TouchableOpacity) <IStyledProps>`
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    border: 1px solid gold;
+    border: 1px solid #D4AF00;
     border-radius: 5px;
     background-color: ${props => props.background ? props.background : defaultProps.item};
+    ${props => props.disabled ? `
+        background-color: #222222;
+        border: 3px solid #444444;
+        `: ""
+    }
 `;
 
 export const SubmitButtonText = styled(Text) <IStyledProps>`
-    color: white;
+    color: ${props => props.disabled ? "#777777" : "white"};
     letter-spacing: ${props => props.letterSpace ? props.letterSpace : 0}px;
 `;
 
@@ -299,7 +312,7 @@ export const ButtonLink = styled(TouchableOpacity) <IStyledProps>`
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid gold;
+    border: 1px solid #D4AF00;
     border-radius: 5px;
     background-color: ${props => props.background ? props.background : defaultProps.item};
 `;
@@ -308,7 +321,7 @@ export const ButtonLinkText = styled(Text) <IStyledProps>`
     width: 80%;
     text-align: center;
     font-size: 15px;
-    color: gold;
+    color: #D4AF00;
     letter-spacing: ${props => props.letterSpace ? props.letterSpace : 0}px;
 `;
 
@@ -317,8 +330,78 @@ export const ButtonLinkIcon = styled(Text) <IStyledProps>`
     text-align: center;
     font-size: 16px;
     font-weight: bolder;
-    color: gold;
+    color: #D4AF00;
     letter-spacing: ${props => props.letterSpace ? props.letterSpace : 0}px;
+`;
+//
+
+//Camera
+export const FullCamera = styled(Camera) <IStyledProps>`
+    width: ${windowWidth}px;
+    height: ${windowHeight}px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+`;
+
+export const ShootButton = styled(TouchableOpacity) <IStyledProps>`
+    border-radius: 100px;
+    background-color: white; 
+    border: 15px solid #cccccc;
+    height: 80px;
+    width: 80px;
+    position: absolute;
+    bottom: 50px; 
+    left: ${(windowWidth / 2) - 40}px;
+`;
+
+export const ExamplePicView = styled(View)<IStyledProps>`
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    top: 10px;
+    left: 10px;
+    width: 50px;
+    height: ${windowHeight/8}px;
+`;
+    
+export const ExamplePic = styled(Image)<IStyledProps>`
+    width: 50px;
+    height: ${windowHeight/8}px;
+    border-radius: 5px;
+    margin-left: 10px;
+`;
+
+export const ListPicturesView = styled(View)<IStyledProps>`
+    margin-top: 15px;
+    width: ${windowWidth-50}px;
+    height: ${windowHeight/4}px;
+    margin-left: 25px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+`;
+
+export const ListPicturesItem = styled(Animated.Image)<IStyledProps>`
+    border-radius: 10px;
+`;
+//
+
+//Info screens
+export const InfoScreen = styled(View) <IStyledProps>`
+    width: ${windowWidth}px;
+    height: ${windowHeight}px;
+    background-color: black;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+`;
+
+export const InfoText = styled(Animated.Text) <IStyledProps>`
+    text-align: center;
+    font-weight: bold;
+    color: #D4AF00;
+    font-size: 20px;
 `;
 //
 

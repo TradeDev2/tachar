@@ -16,7 +16,7 @@ export function Header(props: IHeader) {
                 </HeaderChevron>
             }
             {props.logout &&
-                <HeaderChevron style={{backgroundColor: "black"}} onPress={() => {dispatch(setLogout); props.navigation.goBack()}}>
+                <HeaderChevron style={{backgroundColor: "black"}} onPress={() => {dispatch(setLogout()); props.navigation.goBack()}}>
                     <Icon name="logout" size={30} color="red" />
                 </HeaderChevron>
             }

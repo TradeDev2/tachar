@@ -18,5 +18,8 @@ export default class Util {
         }
     }
 
+    static async returnAsBlob(uri:string) {
+        return await (await fetch(`file://${uri}`)).blob()
+    }
 
 }

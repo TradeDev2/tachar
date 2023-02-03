@@ -5,6 +5,8 @@ export interface IStyledProps {
     width?: number,
     mgTop?: number,
     mgBottom?: number,
+    mgLeft?: number,
+    mgRight?: number,
     letterSpace?: number,
     login?:boolean,
     left?: number,
