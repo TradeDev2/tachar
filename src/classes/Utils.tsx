@@ -1,16 +1,17 @@
-import {useAsyncStorage} from '@react-native-community/async-storage';
+import { useAsyncStorage } from '@react-native-community/async-storage';
+import RNFS from 'react-native-fs';
 
 export default class Util {
 
-    static async setStorageItem(item:string, value:any) {
+    static async setStorageItem(item: string, value: any) {
         try {
-            return await useAsyncStorage(item).setItem(value); 
+            return await useAsyncStorage(item).setItem(value);
         } catch (err) {
             console.log(err);
         }
     }
 
-    static async getStorageItem(item:string) {
+    static async getStorageItem(item: string) {
         try {
             return await useAsyncStorage(item).getItem();
         } catch (err) {
@@ -18,8 +19,14 @@ export default class Util {
         }
     }
 
-    static async returnAsBlob(uri:string) {
-        return await (await fetch(`file://${uri}`)).blob()
+    static async returnAsBlob(uri: string) {
+        return await (await fetch(uri)).blob()
     }
 
+    static async returnAsBase64(uri: string) {
+        return RNFS.readFile(uri, 'base64')
+            .then(res => {
+                return res;
+            });
+    }
 }

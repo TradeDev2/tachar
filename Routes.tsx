@@ -8,7 +8,6 @@ import { CadastroFotos } from './src/screens/cadastroFotos';
 const Stack = createNativeStackNavigator();
 
 export default function Routes() {
-
   return (
     <Stack.Navigator initialRouteName="Login">
       <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />

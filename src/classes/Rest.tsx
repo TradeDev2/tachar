@@ -1,3 +1,4 @@
+import axios from "axios";
 import { api } from "../services/api";
 
 export default class Rest {
@@ -34,6 +35,22 @@ export default class Rest {
                 return {msg: err.response.data.msg, error: true};
             } else {
                 return {msg: "Error de Conexão", error: true};
+            }
+        }
+    }
+
+    static async postUrl(url: string, body: object) {
+        try {
+            const res = await axios.post(url, {
+                    ...body
+            })
+            return res.data;
+        } catch (err:any) {
+            if (err.response) {
+                return {msg: err.response.data.msg, error: true};
+            } else {
+                console.log(err);
+                return {msg: "Erro de Conexão", error: true};
             }
         }
     }

@@ -16,6 +16,6 @@ export interface IStyledProps {
 export const defaultProps = {
     background: "#000000",
     letter: "#FFFFFF",
-    item: "#212121",
+    item: "#454545",
     mgTop: 0
 }

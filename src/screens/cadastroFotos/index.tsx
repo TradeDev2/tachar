@@ -1,25 +1,54 @@
 import React, { type PropsWithChildren, useState, useEffect, useRef } from 'react';
 import { FixatedStatusBar } from '../../components/fixatedStatusBar';
-import { CenterView, ExamplePic, ExamplePicView, Field, FlipPageButton, FloatPage, FormMain, HeaderChevron, InfoScreen, InfoText, Input, Label, LabelText, ListPicturesItem, ListPicturesView, Page, PageTitle, PageTitleView, SubmitButton, SubmitButtonText, SubmitField } from '../../styled';
+import { CenterView, ExamplePic, ExamplePicView, FlipPageButton, FullCamera, InfoText, LinkRecuperacao, LinkRecuperacaoView, ListPicturesItem, ListPicturesView, Page, ShootButton, ErrorMessageView, ErrorMessage } from '../../styled';
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import dayjs from 'dayjs';
 import { ICadastroFotos } from './ICadastroFotos';
-import { CadastroCamera } from '../../components/cadastroCamera';
-import Util from '../../classes/Utils';
 import { Header } from '../../components/header';
-import { Animated, Easing, Dimensions } from 'react-native';
+import { RNCamera } from 'react-native-camera';
+import { Animated, Easing, Dimensions, Alert } from 'react-native';
+import { Link } from '@react-navigation/native';
+import Util from '../../classes/Utils';
+import Rest from '../../classes/Rest';
+import { DB_SENHA, INNER_URL } from '../../config/constants';
 
-const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+const windowWidth = Dimensions.get('window').width;
 
-export function CadastroFotos(props: ICadastroFotos) {
+export function CadastroFotos({ route }: any, props: ICadastroFotos) {
+    const [face, setFace] = useState<any>(null);
     const [phase, setPhase] = useState<number>(0);
+    const [error, setError] = useState<string>("");
     const [pictures, setPictures] = useState<any[]>([]);
     const opacity = useRef(new Animated.Value(0)).current;
+    const typeF = RNCamera.Constants.Type.front;
+    const typeB = RNCamera.Constants.Type.back;
+    const camera = useRef<RNCamera>(null)
+    const { user_id, user_name } = route.params;
 
-    const handlePictures = async (snap: any) => {
-        if (snap) {
-            //await Util.returnAsBlob(snap.path);
-            setPictures([...pictures, snap.path]);
+    const takePicture = async () => {
+        if (face || phase !== 1) {
+        if (phase !== 1 || pictures.length === 0 && face.yawAngle >= -10 && face.yawAngle <= 10 || pictures.length === 1 && face.yawAngle >= 30 || pictures.length === 2 && face.yawAngle <= -30) {
+        if (camera.current) {
+            const options = { quality: 0.5, base64: true };
+            const data = await camera.current?.takePictureAsync(options);
+
+            console.log(data.uri)
+            setPictures([...pictures, data.uri]);
+        }
+        } else {
+            setError("Por favor, vire seu rosto de acordo com o ângulo pedido nas imagens acima");
+         }
+        } else {
+            setError("Nenhum rosto detectado!");
+        }
+    };
+
+    const handleFaceDetection = async ({ faces }: any) => {
+        if (faces.length === 1) {
+            setFace(faces[0])
+        } else {
+            setFace(null);
         }
     }
 
@@ -33,7 +62,24 @@ export function CadastroFotos(props: ICadastroFotos) {
         }
     }, [pictures]);
 
+    useEffect(() => {
+        setTimeout(() => {
+            setError("");
+        }, 5000)
+    }, [error])
+
     const changePhase = () => {
+        Animated.timing(
+            opacity,
+            {
+                toValue: 0,
+                duration: 1,
+                useNativeDriver: true,
+                easing: Easing.ease
+            }
+        ).start();
+
+
         Animated.timing(
             opacity,
             {
@@ -43,6 +89,69 @@ export function CadastroFotos(props: ICadastroFotos) {
                 easing: Easing.ease
             }
         ).start();
+    }
+
+    const finishSignUp = async () => {
+        const response = await Rest.postUrl(INNER_URL, {
+            user_id,
+            photos: [
+                await Util.returnAsBase64(pictures[0]),
+                await Util.returnAsBase64(pictures[1]),
+                await Util.returnAsBase64(pictures[2]),
+                await Util.returnAsBase64(pictures[3]),
+                await Util.returnAsBase64(pictures[4]),
+            ]
+        })
+
+        console.log(response);
+
+        const responseAnexo = await Rest.postBase(`anexos/save-alt`, {
+            password: DB_SENHA,
+            anexos: [{
+                tipo: "Cadastro Pessoa",
+                chave_aux: user_id,
+                data: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+                descricao: "ROSTO (FRENTE)",
+                arquivo: response[0],
+                docto: user_name
+            }, {
+                tipo: "Cadastro Pessoa",
+                chave_aux: user_id,
+                data: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+                descricao: "ROSTO (DIREITA)",
+                arquivo: response[1],
+                docto: user_name
+            }, {
+                tipo: "Cadastro Pessoa",
+                chave_aux: user_id,
+                data: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+                descricao: "ROSTO (ESQUERDA)",
+                arquivo: response[2],
+                docto: user_name
+            }, {
+                tipo: "Cadastro Pessoa",
+                chave_aux: user_id,
+                data: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+                descricao: "IDENTIDADE",
+                arquivo: response[3],
+                docto: user_name
+            }, {
+                tipo: "Cadastro Pessoa",
+                chave_aux: user_id,
+                data: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+                descricao: "COMPROVANTE RESIDENCIA",
+                arquivo: response[4],
+                docto: user_name
+            }]
+        }, "")
+
+        if (responseAnexo.error) {
+            console.log(responseAnexo.error);
+            return;
+        }
+
+        changePhase();
+        setPhase(7);
     }
 
     return (
@@ -64,9 +173,24 @@ export function CadastroFotos(props: ICadastroFotos) {
             }
             {phase == 1 &&
                 <>
-                    <CadastroCamera
-                        handlePictures={async (snap: any) => await handlePictures(snap)}
+                    <FullCamera
+                        ref={camera}
+                        type={typeF}
+                        androidCameraPermissionOptions={{
+                            title: 'Permissão para usar camera',
+                            message: 'Por favor, permita que o app acesse a sua camera',
+                            buttonPositive: 'Ok',
+                            buttonNegative: 'Cancelar',
+                        }}
+                        onFacesDetected={handleFaceDetection}
                     />
+                    {error &&
+                        <ErrorMessageView>
+                            <ErrorMessage>{error}</ErrorMessage>
+                        </ErrorMessageView>
+                    }
+                    <ShootButton onPress={() => takePicture()}>
+                    </ShootButton>
                     <ExamplePicView>
                         {[...Array(3)].map((item: any, index: number) => (
                             <React.Fragment key={index}>
@@ -93,28 +217,131 @@ export function CadastroFotos(props: ICadastroFotos) {
             }
             {phase === 2 &&
                 <>
-                <Header hideBack hideCart navigation={{}} />
-                <InfoText style={{ opacity }}>Verifique se as fotos estão em boa qualidade e que seu rosto está visível</InfoText>
+                    <Header hideBack hideCart navigation={{}} />
+                    <InfoText style={{ opacity }}>Verifique se as fotos estão em boa qualidade e que seu rosto está visível</InfoText>
 
-                <ListPicturesView>
-                    {pictures.map((pic:string, picIndex:number) => (
-                        <ListPicturesItem 
-                            key={picIndex}
-                            style={{height: windowHeight/4, width: 75}}
-                            source={{uri: `file://${pic}`}}
-                        />
-                    ))}
-                </ListPicturesView>
+                    <ListPicturesView>
+                        {pictures.map((pic: string, picIndex: number) => (
+                            <ListPicturesItem
+                                key={picIndex}
+                                style={{ height: windowHeight / 4, width: 75 }}
+                                source={{ uri: `file://${pic}` }}
+                            />
+                        ))}
+                    </ListPicturesView>
+                    <InfoText style={{ opacity }}>Se sim, aperte para continuar e tire uma foto de seu documento de identidade</InfoText>
 
-                <CenterView>
-                <FlipPageButton mgTop={50} mgRight={20} onPress={() => {setPhase(1), setPictures([])}}>
-                        <Icon name="rotate-left" size={25} color={`#FFFFFF`} />
-                    </FlipPageButton>
-                    <FlipPageButton mgTop={50} mgLeft={20} onPress={() => setPhase(1)}>
-                        <Icon name="arrow-right" size={25} color={`#FFFFFF`} />
-                    </FlipPageButton>
-                </CenterView>
-            </>
+                    <CenterView>
+                        <FlipPageButton mgTop={30} mgRight={20} onPress={() => { setPhase(1), setPictures([]) }}>
+                            <Icon name="rotate-left" size={25} color={`#FFFFFF`} />
+                        </FlipPageButton>
+                        <FlipPageButton mgTop={30} mgLeft={20} onPress={() => { setPhase(3); changePhase(); }}>
+                            <Icon name="arrow-right" size={25} color={`#FFFFFF`} />
+                        </FlipPageButton>
+                    </CenterView>
+                </>
+            }
+            {phase == 3 &&
+                <>
+                    <FullCamera
+                        ref={camera}
+                        type={typeB}
+                        androidCameraPermissionOptions={{
+                            title: 'Permissão para usar camera',
+                            message: 'Por favor, permita que o app acesse a sua camera',
+                            buttonPositive: 'Ok',
+                            buttonNegative: 'Cancelar',
+                        }}
+                    />
+                    {error &&
+                        <ErrorMessageView>
+                            <ErrorMessage>{error}</ErrorMessage>
+                        </ErrorMessageView>
+                    }
+                    <ShootButton onPress={async () => { await takePicture(); changePhase(); setPhase(4) }}>
+                    </ShootButton>
+                </>
+            }
+            {phase == 4 &&
+                <>
+                    <Header hideBack hideCart navigation={{}} />
+                    <InfoText style={{ opacity }}>Verifique a qualidade da imagem</InfoText>
+
+                    <ListPicturesView>
+                            <ListPicturesItem
+                                style={{ height: windowHeight / 4, width: 80, marginLeft: (windowWidth / 2) - 70 }}
+                                source={{ uri: `file://${pictures[3]}` }}
+                            />
+                    </ListPicturesView>
+                    <InfoText style={{ opacity }}>Por último, aperte em continuar e envie uma foto de um comprovante de residencia</InfoText>
+
+                    <CenterView>
+                        <FlipPageButton mgTop={30} mgRight={20} onPress={() => { setPhase(3), setPictures([pictures[0],pictures[1],pictures[2]]) }}>
+                            <Icon name="rotate-left" size={25} color={`#FFFFFF`} />
+                        </FlipPageButton>
+                        <FlipPageButton mgTop={30} mgLeft={20} onPress={() => { setPhase(5); changePhase(); }}>
+                            <Icon name="arrow-right" size={25} color={`#FFFFFF`} />
+                        </FlipPageButton>
+                    </CenterView>
+                </>
+            }
+                        {phase == 5 &&
+                <>
+                    <FullCamera
+                        ref={camera}
+                        type={typeB}
+                        androidCameraPermissionOptions={{
+                            title: 'Permissão para usar camera',
+                            message: 'Por favor, permita que o app acesse a sua camera',
+                            buttonPositive: 'Ok',
+                            buttonNegative: 'Cancelar',
+                        }}
+                    />
+                    {error &&
+                        <ErrorMessageView>
+                            <ErrorMessage>{error}</ErrorMessage>
+                        </ErrorMessageView>
+                    }
+                    <ShootButton onPress={async () => { await takePicture(); changePhase(); setPhase(6) }}>
+                    </ShootButton>
+                </>
+            }
+            {phase == 6 &&
+                <>
+                    <Header hideBack hideCart navigation={{}} />
+                    <InfoText style={{ opacity }}>Verifique a qualidade da imagem</InfoText>
+
+                    <ListPicturesView>
+                            <ListPicturesItem
+                                style={{ height: windowHeight / 4, width: 80, marginLeft: (windowWidth / 2) - 70 }}
+                                source={{ uri: `file://${pictures[4]}` }}
+                            />
+                    </ListPicturesView>
+                    
+                    <CenterView>
+                        <FlipPageButton mgTop={30} mgRight={20} onPress={() => { setPhase(4), setPictures([pictures[0],pictures[1],pictures[2], pictures[3]]) }}>
+                            <Icon name="rotate-left" size={25} color={`#FFFFFF`} />
+                        </FlipPageButton>
+                        <FlipPageButton mgTop={30} mgLeft={20} onPress={() => { finishSignUp(); }}>
+                            <Icon name="arrow-right" size={25} color={`#FFFFFF`} />
+                        </FlipPageButton>
+                    </CenterView>
+                </>
+            }
+            {
+                phase === 7 &&
+                <>
+                    <Header hideBack hideCart navigation={{}} />
+                    <InfoText style={{ opacity }}>Suas fotos foram enviadas para avaliação. Você poderá fazer login em breve, aguarde alguns minutos...</InfoText>
+
+                    <LinkRecuperacaoView>
+                        <Link to={{ screen: 'Login' }}>
+                            <LinkRecuperacao>
+                                Voltar para a tela de Login
+                            </LinkRecuperacao>
+                        </Link>
+                    </LinkRecuperacaoView>
+                </>
             }
         </Page >
     )

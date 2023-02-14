@@ -1,62 +1,48 @@
 import React, { type PropsWithChildren, useEffect, useState, useRef } from 'react';
 import { useIsFocused } from '@react-navigation/native';
 import { ICadastroCamera } from './ICadastroCamera';
-import { Dimensions, Image, Linking, Text, TouchableOpacity, View } from 'react-native';
-import { useCameraDevices } from 'react-native-vision-camera';
-import Util from '../../classes/Utils';
-import { Camera } from 'react-native-vision-camera';
-import { FullCamera, ShootButton } from '../../styled';
+import { RNCamera } from 'react-native-camera';
+import { FullCamera, ListPicturesItem, ShootButton } from '../../styled';
+import { Text } from 'react-native/Libraries/Text/Text';
 
 export function CadastroCamera(props: ICadastroCamera) {
-    const [cameraPermission, setCameraPermission] = useState<boolean>(false);
-    const [snapshot, setSnapshot] = useState<any>();
-
-    const devices = useCameraDevices('wide-angle-camera');
-    const camera = useRef<Camera>(null)
-    let device = null;
-    if (!devices.front) {
-        device = devices.back;
-    }
-    device = devices.front;
+    const [face, setFace] = useState<any>(null);
+    const type = RNCamera.Constants.Type.back;
+    const camera = useRef<RNCamera>(null)
     const isFocused = useIsFocused();
 
-
-    useEffect(() => {
-        forceCameraPermission();
-    }, [])
-
-    const forceCameraPermission = async () => {
-        const permission: string = await Camera.getCameraPermissionStatus();
-
-        if (permission === "denied") {
-            await Camera.requestCameraPermission();
-            forceCameraPermission();
-        } else if (permission === "authorized") {
-            setCameraPermission(true);
+    const takePicture = async () => {
+        if (face) {   
+            if (camera.current) {
+                const options = { quality: 0.5, base64: true };
+                const data = await camera.current?.takePictureAsync(options);
+                console.log(data.uri);
         }
-    }
+    };
 
-    const takeSnapshot = async () => {
-        if (camera) {
-            const snap = await camera.current?.takeSnapshot({
-                quality: 85,
-            })
-
-            props.handlePictures(snap);
+    const handleFaceDetection = async ({faces}:any) => {
+        if (faces.length === 1) {
+            setFace(faces[0])
         }
     }
 
     return (
         <>
-            {cameraPermission && device && isFocused &&
+            {type && isFocused &&
                 <>
                     <FullCamera
                         ref={camera}
-                        isActive={true}
-                        device={device}
-                        photo={true}
+                        type={type}
+                        androidCameraPermissionOptions={{
+                            title: 'Permissão para usar camera',
+                            message: 'Por favor, permita que o app acesse a sua camera',
+                            buttonPositive: 'Ok',
+                            buttonNegative: 'Cancelar',
+                          }}
+                        onFacesDetected={handleFaceDetection}
+                        captureAudio={false}
                     />
-                    <ShootButton onPress={() => takeSnapshot()}>
+                    <ShootButton onPress={() => takePicture()}>
                     </ShootButton>
                 </>
             }

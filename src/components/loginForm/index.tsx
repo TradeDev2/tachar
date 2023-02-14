@@ -4,18 +4,30 @@ import { FormMain, Label,  Field, Input, SubmitField, SubmitButton, SubmitButton
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { ILoginForm, IOperador } from './ILoginForm';
 import Rest from '../../classes/Rest';
+import { useNavigation } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
+import { setLogin } from '../../store/reducers/mainReducer';
 
 export function LoginForm(props: ILoginForm) {
+    const navigation = useNavigation();
+    const dispatch = useDispatch()
+    
     const [operadores, setOperadores] = useState<IOperador[]>([]);
-
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    
     const login = async () => {
-        if (!operadores.find((operador: IOperador) => operador.name.toLowerCase().trim() === props.email.toLowerCase().trim()) && props.email.toLowerCase().trim() !== "tradesystem") {
-            console.log("Não encontrado");
+            
+        const log = await Rest.postBase("pessoas/auth", { user_login: email, user_password: password, password: DB_SENHA, cnpj: DB_CNPJ }, "");
+        
+        if (log.error) {
+            console.log(log.msg);
         } else {
-
-            props.login(props.email.toLowerCase().trim() === "tradesystem" ? 1 : operadores.find((operador: IOperador) => operador.name.toLowerCase().trim() === props.email.toLowerCase().trim())?.chave);
+            
+            dispatch(setLogin({ id: log.chave, name: log.nome, token: log.token }));
+            navigation.navigate("Home");
         }
-    };
+};
 
     useEffect(() => {
         if (!operadores[0]) {
@@ -43,8 +55,8 @@ export function LoginForm(props: ILoginForm) {
                     login={true}
                     placeholder={"Email"}
                     placeholderTextColor={"#CCCCCC"}
-                    value={props.email}
-                    onChangeText={(value: string) => { props.setEmail(value) }}
+                    value={email}
+                    onChangeText={(value: string) => { setEmail(value) }}
                 />
             </Field>
             <Field login={true}>
@@ -54,8 +66,8 @@ export function LoginForm(props: ILoginForm) {
                     placeholder={"Senha"}
                     placeholderTextColor={"#CCCCCC"}
                     secureTextEntry={true}
-                    value={props.password}
-                    onChangeText={(value: string) => { props.setPassword(value) }}
+                    value={password}
+                    onChangeText={(value: string) => { setPassword(value) }}
                 />
             </Field>
             <SubmitField>

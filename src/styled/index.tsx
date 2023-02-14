@@ -1,5 +1,6 @@
 import { SafeAreaView, Dimensions, View, Image, TextInput, TouchableOpacity, Text, Animated, ScrollView } from 'react-native';
-import { Camera } from 'react-native-vision-camera';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { RNCamera } from 'react-native-camera';
 import styled from 'styled-components';
 import { IStyledProps, defaultProps } from './IStyled';
 
@@ -38,13 +39,13 @@ export const FlipPageButton = styled(TouchableOpacity) <IStyledProps>`
     width: 65px;
     height: 65px;
     background-color: #232323;
-    border: 1px solid #D4AF00;
     border-radius: 100px;
     display: flex;
     flex-direction: row;
     justify-content: center;
     margin-top: ${props => props.mgTop ? props.mgTop : 0}px;
     margin-left: ${props => props.mgLeft ? props.mgLeft : 0}px;
+    margin-bottom: ${props => props.mgBottom ? props.mgBottom : 0}px;
     margin-right: ${props => props.mgRight ? props.mgRight : 0}px;
     align-items: center;
     ${props => props.disabled ? `
@@ -179,7 +180,6 @@ export const SubmitButton = styled(TouchableOpacity) <IStyledProps>`
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    border: 1px solid #D4AF00;
     border-radius: 5px;
     background-color: ${props => props.background ? props.background : defaultProps.item};
     ${props => props.disabled ? `
@@ -293,6 +293,34 @@ export const HeaderTitle = styled(Text) <IStyledProps>`
     font-weight: bolder;
     color: white;
 `;
+
+export const IconCart = styled(Icon)<IStyledProps>`
+    position: absolute;
+    border-radius: 100px;
+    position: absolute;
+    right: 10px;
+    top: ${(windowHeight / 8) - 20}px;
+`;
+
+export const NotificationCartView = styled(View)<IStyledProps>`
+    position: absolute;
+    background-color: red;
+    border-radius: 100px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 20px;
+    width: 20px;
+    right: 3px;
+    top: ${(windowHeight / 8) - 30}px;
+`;
+
+export const NotificationCart = styled(Text)<IStyledProps>`
+    font-size: 15px;
+    color: white;
+    font-weight: bold;
+`;
 //
 
 //Home
@@ -312,7 +340,6 @@ export const ButtonLink = styled(TouchableOpacity) <IStyledProps>`
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid #D4AF00;
     border-radius: 5px;
     background-color: ${props => props.background ? props.background : defaultProps.item};
 `;
@@ -336,7 +363,7 @@ export const ButtonLinkIcon = styled(Text) <IStyledProps>`
 //
 
 //Camera
-export const FullCamera = styled(Camera) <IStyledProps>`
+export const FullCamera = styled(RNCamera) <IStyledProps>`
     width: ${windowWidth}px;
     height: ${windowHeight}px;
     position: absolute;
@@ -402,6 +429,20 @@ export const InfoText = styled(Animated.Text) <IStyledProps>`
     font-weight: bold;
     color: #D4AF00;
     font-size: 20px;
+`;
+//
+
+//Error
+export const ErrorMessageView = styled(View)<IStyledProps>`
+    width: ${windowWidth}px;
+    margin-top: ${windowHeight/5}px;
+`;
+
+export const ErrorMessage = styled(Text)<IStyledProps>`
+    color: red;
+    font-weight: bold;
+    font-size: 20px;
+    text-align: center;
 `;
 //
 

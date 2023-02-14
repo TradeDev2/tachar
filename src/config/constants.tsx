@@ -17,3 +17,5 @@ export const USER_SESSION_INITIAL = {
     name: "",
     token: ""
 }
+
+export const INNER_URL = "http://tacharpelotas.ddns.net:8080/android.php";
