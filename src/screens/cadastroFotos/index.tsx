@@ -1,6 +1,6 @@
 import React, { type PropsWithChildren, useState, useEffect, useRef } from 'react';
 import { FixatedStatusBar } from '../../components/fixatedStatusBar';
-import { CenterView, ExamplePic, ExamplePicView, FlipPageButton, FullCamera, InfoText, LinkRecuperacao, LinkRecuperacaoView, ListPicturesItem, ListPicturesView, Page, ShootButton, ErrorMessageView, ErrorMessage } from '../../styled';
+import { CenterView, ExamplePic, ExamplePicView, FlipPageButton, FullCamera, InfoText, LinkRecuperacao, LinkRecuperacaoView, ListPicturesItem, ListPicturesView, Page, ShootButton, ErrorMessageView, ErrorMessage, ShowPicture, BaseTouchable } from '../../styled';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import dayjs from 'dayjs';
 import { ICadastroFotos } from './ICadastroFotos';
@@ -11,6 +11,7 @@ import { Link } from '@react-navigation/native';
 import Util from '../../classes/Utils';
 import Rest from '../../classes/Rest';
 import { DB_SENHA, INNER_URL } from '../../config/constants';
+import Loading from '../../components/loading';
 
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
@@ -20,25 +21,29 @@ export function CadastroFotos({ route }: any, props: ICadastroFotos) {
     const [phase, setPhase] = useState<number>(0);
     const [error, setError] = useState<string>("");
     const [pictures, setPictures] = useState<any[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+
     const opacity = useRef(new Animated.Value(0)).current;
     const typeF = RNCamera.Constants.Type.front;
     const typeB = RNCamera.Constants.Type.back;
     const camera = useRef<RNCamera>(null)
-    const { user_id, user_name } = route.params;
+    const a = {user_id: 1, user_name: 3};
+    const { user_id, user_name } = a;//route.params;
+
+    const [activePic, setActivePic] = useState<string>("");
 
     const takePicture = async () => {
         if (face || phase !== 1) {
-        if (phase !== 1 || pictures.length === 0 && face.yawAngle >= -10 && face.yawAngle <= 10 || pictures.length === 1 && face.yawAngle >= 30 || pictures.length === 2 && face.yawAngle <= -30) {
-        if (camera.current) {
-            const options = { quality: 0.5, base64: true };
-            const data = await camera.current?.takePictureAsync(options);
+            if (phase !== 1 || pictures.length === 0 && face.yawAngle >= -10 && face.yawAngle <= 10 || pictures.length === 1 && face.yawAngle >= 30 || pictures.length === 2 && face.yawAngle <= -30) {
+                if (camera.current) {
+                    const options = { quality: 0.5, base64: true };
+                    const data = await camera.current?.takePictureAsync(options);
 
-            console.log(data.uri)
-            setPictures([...pictures, data.uri]);
-        }
-        } else {
-            setError("Por favor, vire seu rosto de acordo com o ângulo pedido nas imagens acima");
-         }
+                    setPictures([...pictures, data.uri]);
+                }
+            } else {
+                setError("Por favor, vire seu rosto de acordo com o ângulo pedido nas imagens acima");
+            }
         } else {
             setError("Nenhum rosto detectado!");
         }
@@ -92,6 +97,8 @@ export function CadastroFotos({ route }: any, props: ICadastroFotos) {
     }
 
     const finishSignUp = async () => {
+        setLoading(true);
+
         const response = await Rest.postUrl(INNER_URL, {
             user_id,
             photos: [
@@ -102,8 +109,6 @@ export function CadastroFotos({ route }: any, props: ICadastroFotos) {
                 await Util.returnAsBase64(pictures[4]),
             ]
         })
-
-        console.log(response);
 
         const responseAnexo = await Rest.postBase(`anexos/save-alt`, {
             password: DB_SENHA,
@@ -146,17 +151,36 @@ export function CadastroFotos({ route }: any, props: ICadastroFotos) {
         }, "")
 
         if (responseAnexo.error) {
+            setLoading(false);
             console.log(responseAnexo.error);
             return;
         }
-
+        
         changePhase();
         setPhase(7);
+        setLoading(false);
+    }
+
+    if (loading) {
+        return (
+            <Loading/>
+        )
     }
 
     return (
         <Page>
             <FixatedStatusBar />
+            
+            {activePic &&
+                <BaseTouchable
+                    style={{width: windowWidth, height: windowHeight, elevation: activePic ? 300 : -1, zIndex: activePic ? 300 : -1}}
+                    onPress={() => setActivePic("")}>
+                    <ShowPicture
+                        source={{ uri: `file://${activePic}` }}
+                    />
+                </BaseTouchable>
+            }
+
             {phase == 0 &&
                 <>
                     <Header hideBack hideCart navigation={{}} />
@@ -222,11 +246,14 @@ export function CadastroFotos({ route }: any, props: ICadastroFotos) {
 
                     <ListPicturesView>
                         {pictures.map((pic: string, picIndex: number) => (
-                            <ListPicturesItem
+                            <BaseTouchable
                                 key={picIndex}
-                                style={{ height: windowHeight / 4, width: 75 }}
-                                source={{ uri: `file://${pic}` }}
-                            />
+                                onPress={() => setActivePic(pic)}>
+                                <ListPicturesItem
+                                    style={{ height: windowHeight / 4, width: 75 }}
+                                    source={{ uri: `file://${pic}` }}
+                                />
+                            </BaseTouchable>
                         ))}
                     </ListPicturesView>
                     <InfoText style={{ opacity }}>Se sim, aperte para continuar e tire uma foto de seu documento de identidade</InfoText>
@@ -268,15 +295,18 @@ export function CadastroFotos({ route }: any, props: ICadastroFotos) {
                     <InfoText style={{ opacity }}>Verifique a qualidade da imagem</InfoText>
 
                     <ListPicturesView>
+                        <BaseTouchable
+                            onPress={() => setActivePic(pictures[3])}>
                             <ListPicturesItem
                                 style={{ height: windowHeight / 4, width: 80, marginLeft: (windowWidth / 2) - 70 }}
                                 source={{ uri: `file://${pictures[3]}` }}
                             />
+                        </BaseTouchable>
                     </ListPicturesView>
                     <InfoText style={{ opacity }}>Por último, aperte em continuar e envie uma foto de um comprovante de residencia</InfoText>
 
                     <CenterView>
-                        <FlipPageButton mgTop={30} mgRight={20} onPress={() => { setPhase(3), setPictures([pictures[0],pictures[1],pictures[2]]) }}>
+                        <FlipPageButton mgTop={30} mgRight={20} onPress={() => { setPhase(3), setPictures([pictures[0], pictures[1], pictures[2]]) }}>
                             <Icon name="rotate-left" size={25} color={`#FFFFFF`} />
                         </FlipPageButton>
                         <FlipPageButton mgTop={30} mgLeft={20} onPress={() => { setPhase(5); changePhase(); }}>
@@ -285,7 +315,7 @@ export function CadastroFotos({ route }: any, props: ICadastroFotos) {
                     </CenterView>
                 </>
             }
-                        {phase == 5 &&
+            {phase == 5 &&
                 <>
                     <FullCamera
                         ref={camera}
@@ -312,14 +342,18 @@ export function CadastroFotos({ route }: any, props: ICadastroFotos) {
                     <InfoText style={{ opacity }}>Verifique a qualidade da imagem</InfoText>
 
                     <ListPicturesView>
+                        <BaseTouchable
+                            onPress={() => setActivePic(pictures[4])}
+                        >
                             <ListPicturesItem
                                 style={{ height: windowHeight / 4, width: 80, marginLeft: (windowWidth / 2) - 70 }}
                                 source={{ uri: `file://${pictures[4]}` }}
                             />
+                        </BaseTouchable>
                     </ListPicturesView>
-                    
+
                     <CenterView>
-                        <FlipPageButton mgTop={30} mgRight={20} onPress={() => { setPhase(4), setPictures([pictures[0],pictures[1],pictures[2], pictures[3]]) }}>
+                        <FlipPageButton mgTop={30} mgRight={20} onPress={() => { setPhase(4), setPictures([pictures[0], pictures[1], pictures[2], pictures[3]]) }}>
                             <Icon name="rotate-left" size={25} color={`#FFFFFF`} />
                         </FlipPageButton>
                         <FlipPageButton mgTop={30} mgLeft={20} onPress={() => { finishSignUp(); }}>

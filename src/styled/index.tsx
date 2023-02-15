@@ -1,4 +1,4 @@
-import { SafeAreaView, Dimensions, View, Image, TextInput, TouchableOpacity, Text, Animated, ScrollView } from 'react-native';
+import { Dimensions, View, Image, TextInput, TouchableOpacity, Text, Animated, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { RNCamera } from 'react-native-camera';
 import styled from 'styled-components';
@@ -412,6 +412,14 @@ export const ListPicturesView = styled(View)<IStyledProps>`
 export const ListPicturesItem = styled(Animated.Image)<IStyledProps>`
     border-radius: 10px;
 `;
+
+export const ShowPicture = styled(Image)<IStyledProps>`
+    height: ${windowHeight}px;
+    width: ${windowWidth}px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+`; 
 //
 
 //Info screens
@@ -446,6 +454,18 @@ export const ErrorMessage = styled(Text)<IStyledProps>`
 `;
 //
 
+//Loading
+export const LoadingScreen = styled(View)<IStyledProps>`
+    background-color: black;
+    window: ${windowWidth}px;
+    height: ${windowHeight}px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+`;
+//
+
 //Utils
 export const CenterView = styled(View) <IStyledProps>`
     width: 100%;
@@ -453,5 +473,8 @@ export const CenterView = styled(View) <IStyledProps>`
     flex-direction: row;
     justify-content: center;
     align-items: center;
+`;
+
+export const BaseTouchable = styled(TouchableOpacity)<IStyledProps>`
 `;
 //

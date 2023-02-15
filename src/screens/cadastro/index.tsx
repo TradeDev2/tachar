@@ -8,6 +8,7 @@ import { ICadastro } from './ICadastro';
 import { useNavigation } from '@react-navigation/native';
 import Rest from '../../classes/Rest';
 import { DB_CNPJ, DB_SENHA } from '../../config/constants';
+import Loading from '../../components/loading';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -16,6 +17,7 @@ export function Cadastro(props: ICadastro) {
     const firstHalfPos = useRef(new Animated.Value(0)).current;
     const secondHalfPos = useRef(new Animated.Value(windowWidth)).current;
     const [transition, setTransition] = useState<1 | 2>(1);
+    const [loading, setLoading] = useState<boolean>(false);
 
     const [chave, setChave] = useState<string>("");
     const [nome, setNome] = useState<string>("");
@@ -93,11 +95,12 @@ export function Cadastro(props: ICadastro) {
         if (cpf.length < 11) {
             return;
         }
-
-        const pessoas = await Rest.postBase(`pessoas/filter-alt?cpf_cnpj=${cpf}`, {
+        setLoading(true);
+        
+        const pessoas = await Rest.postBase(`pessoas/filter-alt?cnpj_cpf=${cpf}`, {
             password: DB_SENHA
         }, "");
-
+        
         if (pessoas[0]) {
             setChave(pessoas[0].chave);
             setCpf(pessoas[0].cnpj_cpf);
@@ -105,15 +108,14 @@ export function Cadastro(props: ICadastro) {
             setNome(pessoas[0].nome);
             setSenha(pessoas[0].senha);
             setSenhaConfirma(pessoas[0].senha);
-
+            
             const enderecos = await Rest.postBase(`pessoas/enderecos-alt/${pessoas[0].chave}`, {
                 password: DB_SENHA,
                 cnpj: DB_CNPJ
             }, "");
             
-            console.log(enderecos);
             const endereco = enderecos.find((end: any) => end.padrao == 1);
-
+            
             setCep(endereco.cep);
             setEnderecoChave(endereco.chave);
             setNumero(endereco.numero);
@@ -122,10 +124,12 @@ export function Cadastro(props: ICadastro) {
             setUf(endereco.uf);
             setComplemento(endereco.complemento);
         }
+        setLoading(false);
     }
-
+    
     const submit = async () => {
         if (chave) {
+            setLoading(true);
             const response = await Rest.putBase(`pessoas/salvar-alt`, {
                 password: DB_SENHA,
                 chave,
@@ -135,6 +139,7 @@ export function Cadastro(props: ICadastro) {
             },"");
 
             if (response.error) {
+                setLoading(false);
                 console.log(response.error);
                 return;
             }
@@ -151,17 +156,20 @@ export function Cadastro(props: ICadastro) {
                     complemento
                 }]
             },"")
-
+            
             if (responseEndereco.error) {
+                setLoading(false);
                 console.log(responseEndereco.error);
                 return;
             }
-
+            
+            setLoading(false);
             navigation.navigate("Cadastro_Fotos", {
                 user_id: chave,
                 user_name: nome
             })
         } else {
+            setLoading(true);
             const response = await Rest.postBase(`pessoas/salvar-alt`, {
                 password: DB_SENHA,
                 chave,
@@ -172,25 +180,34 @@ export function Cadastro(props: ICadastro) {
                 uf,
                 complemento
             }, "")
-
+            
             if (response.error) {
+                setLoading(false);
                 console.log(response.error);
                 return;
             }
-
-            const pessoa = await Rest.postBase(`pessoas/filter?cpf=${cpf}`,{
+            
+            const pessoa = await Rest.postBase(`pessoas/filter-alt?cnpj_cpf=${cpf}`,{
                 password: DB_SENHA
             },"");
-
+            
             if (!pessoa[0]) {
+                setLoading(false);
                 return;
             }
-
+            
+            setLoading(false);
             navigation.navigate("Cadastro_Fotos", {
                 user_id: pessoa[0].chave,
                 user_name: nome
             });
         }
+    }
+
+    if (loading) {
+        return (
+            <Loading/>
+        )
     }
 
     return (
