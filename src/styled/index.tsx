@@ -102,14 +102,14 @@ ${props => props.login ? `
     margin-left: 10%;
     border: 1px solid ${props.letter ? props.letter : defaultProps.letter};
     border-radius: 20px;
-    background-color: ${props.background ? props.background : defaultProps.item};
+    background-color: ${props.background ? props.background : "white"};
     color: ${props.letter ? props.letter : "#D4AF00"};
     display: flex;
     flex-direction: row;
     margin-bottom: 20px;
-
+    
     ` : `
-
+    
     width: ${props.segments ? `${(100 / props.segments) - 15}` : "80"}%;
     height: 40px;
     margin-left: 10%;
@@ -117,14 +117,14 @@ ${props => props.login ? `
     display: flex;
     flex-direction: column;
     margin-bottom: 50px;`
-    }
+}
 `;
 
 export const Label = styled(View) <IStyledProps>`
 ${props => props.login ? `
     width: 20%;
     height: 100%;
-    color: white;
+    color: black;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -138,8 +138,8 @@ ${props => props.login ? `
         flex-direction: row;
         justify-content: center;
     `
-
-    }
+    
+}
 `;
 
 export const LabelText = styled(Text) <IStyledProps>`
@@ -159,9 +159,9 @@ ${props => props.login ? `
     ` : `
     border: 1px solid ${props.letter ? props.letter : defaultProps.letter};
     border-radius: 10px;
-    background-color: ${props.background ? props.background : defaultProps.item};
+    background-color: ${props.background ? props.background : "white"};
     color: #D4AF00;
-    `
+`
     }
 `;
 

@@ -4,8 +4,9 @@ import { FormMain, Label,  Field, Input, SubmitField, SubmitButton, SubmitButton
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { ILoginForm, IOperador } from './ILoginForm';
 import Rest from '../../classes/Rest';
-import { useDispatch } from 'react-redux';
-import { setLogin } from '../../store/reducers/mainReducer';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectLogin, setLogin } from '../../store/reducers/mainReducer';
+import { Alert } from 'react-native';
 
 export function LoginForm(props: ILoginForm) {
     const dispatch = useDispatch()
@@ -21,7 +22,6 @@ export function LoginForm(props: ILoginForm) {
         if (log.error) {
             console.log(log.msg);
         } else {
-            
             dispatch(setLogin({ id: log.chave, name: log.nome, token: log.token }));
             props.goHome();
         }
@@ -48,21 +48,21 @@ export function LoginForm(props: ILoginForm) {
     return (
         <FormMain login={true} mgTop={50}>
             <Field login={true}>
-                <Label login={true}><Icon name="person" size={25} color="#FFFFFF" /></Label>
+                <Label login={true}><Icon name="person" size={25} color="#999999" /></Label>
                 <Input
                     login={true}
                     placeholder={"Email"}
-                    placeholderTextColor={"#CCCCCC"}
+                    placeholderTextColor={"#999999"}
                     value={email}
                     onChangeText={(value: string) => { setEmail(value) }}
                 />
             </Field>
             <Field login={true}>
-                <Label login={true}><Icon name="lock" size={25} color="#FFFFFF" /></Label>
+                <Label login={true}><Icon name="lock" size={25} color="#999999" /></Label>
                 <Input
                     login={true}
                     placeholder={"Senha"}
-                    placeholderTextColor={"#CCCCCC"}
+                    placeholderTextColor={"#999999"}
                     secureTextEntry={true}
                     value={password}
                     onChangeText={(value: string) => { setPassword(value) }}

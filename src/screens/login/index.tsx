@@ -1,14 +1,14 @@
-import React, { type PropsWithChildren, useState, useEffect } from 'react';
+import React, { type PropsWithChildren } from 'react';
 import { FixatedStatusBar } from '../../components/fixatedStatusBar';
-import { DB_SENHA, DB_CNPJ, defaultColors } from '../../config/constants';
+import { defaultColors } from '../../config/constants';
 import { LoginBottomHalf, LoginLogo, LoginTopHalf, Page, LinkRecuperacao, SigninButton, SigninButtonText, LinkRecuperacaoView } from '../../styled';
-import { Link, useIsFocused } from '@react-navigation/native';
+import { Link } from '@react-navigation/native';
 import { Footer } from '../../components/footer';
 import { ILogin } from './ILogin';
 import { useNavigation } from '@react-navigation/native';
 import Rest from '../../classes/Rest';
-import { setLogin, selectLogin } from '../../store/reducers/mainReducer';
-import { useDispatch, useSelector } from 'react-redux';
+import { selectLogin } from '../../store/reducers/mainReducer';
+import { useSelector } from 'react-redux';
 import { LoginForm } from '../../components/loginForm';
 
 export function Login(props: ILogin) {

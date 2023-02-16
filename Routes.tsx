@@ -1,11 +1,12 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { IRoutes } from './src/interfaces/IRoutes';
 
 import { HomeScreen } from './src/screens/home';
 import { Login } from './src/screens/login';
 import { Cadastro } from './src/screens/cadastro';
 import { CadastroFotos } from './src/screens/cadastroFotos';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<IRoutes>();
 
 export default function Routes() {
   return (

@@ -1,4 +1,5 @@
 import React, { type PropsWithChildren, useState } from 'react';
+import { Alert } from 'react-native';
 import { HeaderChevron, IconCart, NotificationCartView, NotificationCart, HeaderView, HeaderLogoView, HeaderLogo, HeaderTitleView, HeaderTitle } from '../../styled';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { IHeader } from './IHeader';

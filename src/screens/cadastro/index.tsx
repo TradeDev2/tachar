@@ -12,6 +12,7 @@ import Loading from '../../components/loading';
 
 const windowWidth = Dimensions.get('window').width;
 
+
 export function Cadastro(props: ICadastro) {
     const navigation = useNavigation();
     const firstHalfPos = useRef(new Animated.Value(0)).current;
