@@ -19,6 +19,10 @@ export function Login(props: ILogin) {
         navigation.navigate("Home");
     }
     
+    const goHome = () => {
+        navigation.navigate("Home");
+    }
+
     return (
         <Page>
             <FixatedStatusBar />
@@ -26,7 +30,7 @@ export function Login(props: ILogin) {
                 <LoginLogo resizeMode='contain' source={require("../../images/logo.png")} />
             </LoginTopHalf>
             <LoginBottomHalf>
-                <LoginForm/>
+                <LoginForm goHome={goHome}/>
 
                 <LinkRecuperacaoView>
                     <Link to={{ screen: 'Recuperar_Senha' }}>

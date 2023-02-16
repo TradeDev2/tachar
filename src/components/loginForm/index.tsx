@@ -4,12 +4,10 @@ import { FormMain, Label,  Field, Input, SubmitField, SubmitButton, SubmitButton
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { ILoginForm, IOperador } from './ILoginForm';
 import Rest from '../../classes/Rest';
-import { useNavigation } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
 import { setLogin } from '../../store/reducers/mainReducer';
 
 export function LoginForm(props: ILoginForm) {
-    const navigation = useNavigation();
     const dispatch = useDispatch()
     
     const [operadores, setOperadores] = useState<IOperador[]>([]);
@@ -25,7 +23,7 @@ export function LoginForm(props: ILoginForm) {
         } else {
             
             dispatch(setLogin({ id: log.chave, name: log.nome, token: log.token }));
-            navigation.navigate("Home");
+            props.goHome();
         }
 };
 

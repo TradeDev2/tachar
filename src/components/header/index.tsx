@@ -23,7 +23,7 @@ export function Header(props: IHeader) {
             }
             {!props.hideCart &&
                 <>
-                    <IconCart name="shopping-cart" size={32} color="#FFFFFF" onPress={() => setNotifications(notifications + 1)}/>
+                    <IconCart name="shopping-cart" size={32} color="#FFFFFF"/>
                     {notifications > 0 &&
                         <NotificationCartView>
                             {notifications <= 9 &&
