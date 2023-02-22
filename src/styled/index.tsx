@@ -117,7 +117,7 @@ ${props => props.login ? `
     display: flex;
     flex-direction: column;
     margin-bottom: 50px;`
-}
+    }
 `;
 
 export const Label = styled(View) <IStyledProps>`
@@ -138,8 +138,8 @@ ${props => props.login ? `
         flex-direction: row;
         justify-content: center;
     `
-    
-}
+
+    }
 `;
 
 export const LabelText = styled(Text) <IStyledProps>`
@@ -294,7 +294,7 @@ export const HeaderTitle = styled(Text) <IStyledProps>`
     color: white;
 `;
 
-export const IconCart = styled(Icon)<IStyledProps>`
+export const IconCart = styled(Icon) <IStyledProps>`
     position: absolute;
     border-radius: 100px;
     position: absolute;
@@ -302,7 +302,7 @@ export const IconCart = styled(Icon)<IStyledProps>`
     top: ${(windowHeight / 8) - 20}px;
 `;
 
-export const NotificationCartView = styled(View)<IStyledProps>`
+export const NotificationCartView = styled(View) <IStyledProps>`
     position: absolute;
     background-color: red;
     border-radius: 100px;
@@ -316,7 +316,7 @@ export const NotificationCartView = styled(View)<IStyledProps>`
     top: ${(windowHeight / 8) - 30}px;
 `;
 
-export const NotificationCart = styled(Text)<IStyledProps>`
+export const NotificationCart = styled(Text) <IStyledProps>`
     font-size: 15px;
     color: white;
     font-weight: bold;
@@ -382,44 +382,44 @@ export const ShootButton = styled(TouchableOpacity) <IStyledProps>`
     left: ${(windowWidth / 2) - 40}px;
 `;
 
-export const ExamplePicView = styled(View)<IStyledProps>`
+export const ExamplePicView = styled(View) <IStyledProps>`
     position: absolute;
     display: flex;
     flex-direction: row;
     top: 10px;
     left: 10px;
     width: 50px;
-    height: ${windowHeight/8}px;
+    height: ${windowHeight / 8}px;
 `;
-    
-export const ExamplePic = styled(Image)<IStyledProps>`
+
+export const ExamplePic = styled(Image) <IStyledProps>`
     width: 50px;
-    height: ${windowHeight/8}px;
+    height: ${windowHeight / 8}px;
     border-radius: 5px;
     margin-left: 10px;
 `;
 
-export const ListPicturesView = styled(View)<IStyledProps>`
+export const ListPicturesView = styled(View) <IStyledProps>`
     margin-top: 15px;
-    width: ${windowWidth-50}px;
-    height: ${windowHeight/4}px;
+    width: ${windowWidth - 50}px;
+    height: ${windowHeight / 4}px;
     margin-left: 25px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 `;
 
-export const ListPicturesItem = styled(Animated.Image)<IStyledProps>`
+export const ListPicturesItem = styled(Animated.Image) <IStyledProps>`
     border-radius: 10px;
 `;
 
-export const ShowPicture = styled(Image)<IStyledProps>`
+export const ShowPicture = styled(Image) <IStyledProps>`
     height: ${windowHeight}px;
     width: ${windowWidth}px;
     position: absolute;
     top: 0px;
     left: 0px;
-`; 
+`;
 //
 
 //Info screens
@@ -441,12 +441,12 @@ export const InfoText = styled(Animated.Text) <IStyledProps>`
 //
 
 //Error
-export const ErrorMessageView = styled(View)<IStyledProps>`
+export const ErrorMessageView = styled(View) <IStyledProps>`
     width: ${windowWidth}px;
-    margin-top: ${windowHeight/5}px;
+    margin-top: ${windowHeight / 5}px;
 `;
 
-export const ErrorMessage = styled(Text)<IStyledProps>`
+export const ErrorMessage = styled(Text) <IStyledProps>`
     color: red;
     font-weight: bold;
     font-size: 20px;
@@ -455,7 +455,7 @@ export const ErrorMessage = styled(Text)<IStyledProps>`
 //
 
 //Loading
-export const LoadingScreen = styled(View)<IStyledProps>`
+export const LoadingScreen = styled(View) <IStyledProps>`
     background-color: black;
     window: ${windowWidth}px;
     height: ${windowHeight}px;
@@ -463,6 +463,29 @@ export const LoadingScreen = styled(View)<IStyledProps>`
     flex-direction: row;
     justify-content: center;
     align-items: center;
+`;
+//
+
+//Alert
+export const AlertPressable = styled(TouchableOpacity) <IStyledProps>`
+    width: ${windowWidth - 20}px;
+    height: 250px;
+    position: absolute;
+    left: 10px;
+    height: ${windowHeight * 0.2}px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: ${defaultProps.item};
+    padding: 10px;
+    border-top: 2px solid ${props => props.type === "error" ? "red" : props.type === "success" ? "green" : "white"};
+`;
+
+export const AlertMessage = styled(Text) <IStyledProps>`
+    font-size: 14px;
+    font-weight: bold;
+    color: ${defaultProps.letter};
 `;
 //
 
@@ -475,6 +498,6 @@ export const CenterView = styled(View) <IStyledProps>`
     align-items: center;
 `;
 
-export const BaseTouchable = styled(TouchableOpacity)<IStyledProps>`
+export const BaseTouchable = styled(TouchableOpacity) <IStyledProps>`
 `;
 //

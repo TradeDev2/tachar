@@ -11,6 +11,7 @@ export interface IStyledProps {
     login?:boolean,
     left?: number,
     segments?: number,
+    type?: string
 }
 
 export const defaultProps = {

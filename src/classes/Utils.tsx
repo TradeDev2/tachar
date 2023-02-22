@@ -29,4 +29,14 @@ export default class Util {
                 return res;
             });
     }
+
+    static formatMoney(value: string) {
+        if (isNaN(parseInt(value))) {
+            return "";
+        }
+
+        const formattedValue = new Intl.NumberFormat('pt-BR', { style: 'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(parseFloat(value));
+
+        return formattedValue;
+    }
 }

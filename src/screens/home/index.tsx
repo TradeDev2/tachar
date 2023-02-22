@@ -26,9 +26,8 @@ export function HomeScreen() {
     useEffect(() => {
         (async () => {
             if (!logged.id) {
-                return navigation.navigate("Login");
+                navigation.navigate("Login");
             }
-            console.log(logged);
         })();
     },[]);
 
@@ -42,7 +41,7 @@ export function HomeScreen() {
                 </PageTitleView>
                 <ButtonLinks mgBottom={20}>
                     {links.map((link, linkIndex) => (
-                        <ButtonLink key={linkIndex} width={windowWidth / 1.4} onPress={() => console.log(link.link)}>
+                        <ButtonLink key={linkIndex} width={windowWidth / 1.4} onPress={() => navigation.navigate(link.link)}>
                             <ButtonLinkText>{link.name}</ButtonLinkText>
                             <ButtonLinkIcon><Icon name={link.icon} size={25} color="gold" /></ButtonLinkIcon>
                         </ButtonLink>

@@ -25,6 +25,7 @@ export function Login(props: ILogin) {
 
     return (
         <Page>
+
             <FixatedStatusBar />
             <LoginTopHalf background={defaultColors.item}>
                 <LoginLogo resizeMode='contain' source={require("../../images/logo.png")} />

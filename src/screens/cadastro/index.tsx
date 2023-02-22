@@ -9,9 +9,9 @@ import { useNavigation } from '@react-navigation/native';
 import Rest from '../../classes/Rest';
 import { DB_CNPJ, DB_SENHA } from '../../config/constants';
 import Loading from '../../components/loading';
+import { IAlertMessage } from '../../interfaces/IGeneral';
 
 const windowWidth = Dimensions.get('window').width;
-
 
 export function Cadastro(props: ICadastro) {
     const navigation = useNavigation();
@@ -19,6 +19,7 @@ export function Cadastro(props: ICadastro) {
     const secondHalfPos = useRef(new Animated.Value(windowWidth)).current;
     const [transition, setTransition] = useState<1 | 2>(1);
     const [loading, setLoading] = useState<boolean>(false);
+    const [alert, setAlert] = useState<IAlertMessage>({ type: "", msg: "" });
 
     const [chave, setChave] = useState<string>("");
     const [nome, setNome] = useState<string>("");
@@ -97,11 +98,17 @@ export function Cadastro(props: ICadastro) {
             return;
         }
         setLoading(true);
-        
+
         const pessoas = await Rest.postBase(`pessoas/filter-alt?cnpj_cpf=${cpf}`, {
             password: DB_SENHA
         }, "");
-        
+
+        if (pessoas.error) {
+            setAlert({ type: "error", msg: pessoas.error.msg });
+            setLoading(false);
+            return;
+        }
+
         if (pessoas[0]) {
             setChave(pessoas[0].chave);
             setCpf(pessoas[0].cnpj_cpf);
@@ -109,14 +116,20 @@ export function Cadastro(props: ICadastro) {
             setNome(pessoas[0].nome);
             setSenha(pessoas[0].senha);
             setSenhaConfirma(pessoas[0].senha);
-            
+
             const enderecos = await Rest.postBase(`pessoas/enderecos-alt/${pessoas[0].chave}`, {
                 password: DB_SENHA,
                 cnpj: DB_CNPJ
             }, "");
-            
+
+            if (enderecos.error) {
+                setAlert({ type: "error", msg: enderecos.error.msg });
+                setLoading(false);
+                return;
+            }
+
             const endereco = enderecos.find((end: any) => end.padrao == 1);
-            
+
             setCep(endereco.cep);
             setEnderecoChave(endereco.chave);
             setNumero(endereco.numero);
@@ -127,7 +140,7 @@ export function Cadastro(props: ICadastro) {
         }
         setLoading(false);
     }
-    
+
     const submit = async () => {
         if (chave) {
             setLoading(true);
@@ -137,11 +150,11 @@ export function Cadastro(props: ICadastro) {
                 cnpj_cpf: cpf,
                 login: email,
                 senha,
-            },"");
+            }, "");
 
             if (response.error) {
                 setLoading(false);
-                console.log(response.error);
+                setAlert({type: "error", msg: response.error.msg});
                 return;
             }
 
@@ -156,14 +169,14 @@ export function Cadastro(props: ICadastro) {
                     uf,
                     complemento
                 }]
-            },"")
-            
+            }, "")
+
             if (responseEndereco.error) {
                 setLoading(false);
-                console.log(responseEndereco.error);
+                setAlert({type: "error", msg: responseEndereco.error.msg});
                 return;
             }
-            
+
             setLoading(false);
             navigation.navigate("Cadastro_Fotos", {
                 user_id: chave,
@@ -181,22 +194,22 @@ export function Cadastro(props: ICadastro) {
                 uf,
                 complemento
             }, "")
-            
+
             if (response.error) {
                 setLoading(false);
-                console.log(response.error);
+                setAlert({type: "error", msg: response.error.msg});
                 return;
             }
-            
-            const pessoa = await Rest.postBase(`pessoas/filter-alt?cnpj_cpf=${cpf}`,{
+
+            const pessoa = await Rest.postBase(`pessoas/filter-alt?cnpj_cpf=${cpf}`, {
                 password: DB_SENHA
-            },"");
-            
+            }, "");
+
             if (!pessoa[0]) {
                 setLoading(false);
                 return;
             }
-            
+
             setLoading(false);
             navigation.navigate("Cadastro_Fotos", {
                 user_id: pessoa[0].chave,
@@ -207,7 +220,7 @@ export function Cadastro(props: ICadastro) {
 
     if (loading) {
         return (
-            <Loading/>
+            <Loading />
         )
     }
 
