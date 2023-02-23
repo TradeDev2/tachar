@@ -10,7 +10,7 @@ import Rest from '../../classes/Rest';
 import { DB_CNPJ, DB_SENHA } from '../../config/constants';
 import Loading from '../../components/loading';
 import { useSelector } from 'react-redux';
-import { selectLogin } from '../../store/reducers/mainReducer';
+import { selectLogin } from '../../store/reducers/reducers';
 import { Text } from 'react-native/Libraries/Text/Text';
 import { DataTable } from 'react-native-paper';
 import dayjs from 'dayjs';

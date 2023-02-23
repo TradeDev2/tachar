@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { IState } from './ImainReducer';
+import { IState } from './IReducers';
 
-export const mainReducer = createSlice({
+export const mainReducer:any = createSlice({
     name: 'main',
     initialState: {
         login: {

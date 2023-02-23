@@ -6,16 +6,16 @@ export function Alert(props: IAlert) {
     const [timer, setTimer] = useState<any>();
     
     useEffect(() => {
-        setTimer(setTimeout(() => props.setAlert({ type: "", msg: "" }), 1500));
+        setTimer(setTimeout(() => props.setAlert({ type: "", msg: "" }), 5000));
     }, [props.alert]);
        
-    if (props.alert.msg) {
+    if (!props.alert.msg) {
         return (<></>);
     }
     
     return (
         <AlertPressable type={props.alert.type} onPress={() => props.setAlert({type: "", msg: ""})}>
-            <AlertMessage>
+            <AlertMessage type={props.alert.type}>
                 {props.alert.msg}
             </AlertMessage>
         </AlertPressable>

@@ -104,7 +104,7 @@ export function Cadastro(props: ICadastro) {
         }, "");
 
         if (pessoas.error) {
-            setAlert({ type: "error", msg: pessoas.error.msg });
+            setAlert({ type: "error", msg: pessoas.msg });
             setLoading(false);
             return;
         }
@@ -123,7 +123,7 @@ export function Cadastro(props: ICadastro) {
             }, "");
 
             if (enderecos.error) {
-                setAlert({ type: "error", msg: enderecos.error.msg });
+                setAlert({ type: "error", msg: enderecos.msg });
                 setLoading(false);
                 return;
             }
@@ -154,7 +154,7 @@ export function Cadastro(props: ICadastro) {
 
             if (response.error) {
                 setLoading(false);
-                setAlert({type: "error", msg: response.error.msg});
+                setAlert({type: "error", msg: response.msg});
                 return;
             }
 
@@ -173,7 +173,7 @@ export function Cadastro(props: ICadastro) {
 
             if (responseEndereco.error) {
                 setLoading(false);
-                setAlert({type: "error", msg: responseEndereco.error.msg});
+                setAlert({type: "error", msg: responseEndereco.msg});
                 return;
             }
 
@@ -197,7 +197,7 @@ export function Cadastro(props: ICadastro) {
 
             if (response.error) {
                 setLoading(false);
-                setAlert({type: "error", msg: response.error.msg});
+                setAlert({type: "error", msg: response.msg});
                 return;
             }
 

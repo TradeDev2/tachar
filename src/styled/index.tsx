@@ -468,24 +468,24 @@ export const LoadingScreen = styled(View) <IStyledProps>`
 
 //Alert
 export const AlertPressable = styled(TouchableOpacity) <IStyledProps>`
-    width: ${windowWidth - 20}px;
-    height: 250px;
+    width: ${windowWidth - 100}px;
+    height: 150px;
     position: absolute;
-    left: 10px;
+    left: 50px;
     height: ${windowHeight * 0.2}px;
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
     background-color: ${defaultProps.item};
-    padding: 10px;
-    border-top: 2px solid ${props => props.type === "error" ? "red" : props.type === "success" ? "green" : "white"};
+    border-top: 10px solid ${props => props.type === "error" ? "red" : props.type === "success" ? "green" : "white"};
+    z-index: 2;
 `;
 
 export const AlertMessage = styled(Text) <IStyledProps>`
-    font-size: 14px;
+    font-size: 20px;
     font-weight: bold;
-    color: ${defaultProps.letter};
+    color: ${props => props.type === "error" ? "red" : props.type === "success" ? "green" : "white"};
 `;
 //
 

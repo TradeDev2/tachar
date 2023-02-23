@@ -4,13 +4,11 @@ import { FormMain, Label, Field, Input, SubmitField, SubmitButton, SubmitButtonT
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { ILoginForm, IOperador } from './ILoginForm';
 import Rest from '../../classes/Rest';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectLogin, setLogin } from '../../store/reducers/mainReducer';
 import { Alert } from '../../components/alert';
 import { IAlertMessage } from '../../interfaces/IGeneral';
+import Util from '../../classes/Utils';
 
 export function LoginForm(props: ILoginForm) {
-    const dispatch = useDispatch()
 
     const [operadores, setOperadores] = useState<IOperador[]>([]);
     const [email, setEmail] = useState<string>("");
@@ -21,11 +19,11 @@ export function LoginForm(props: ILoginForm) {
 
         const log = await Rest.postBase("pessoas/auth", { user_login: email, user_password: password, password: DB_SENHA, cnpj: DB_CNPJ }, "");
 
+        console.log(log);
         if (log.error) {
             setAlert({ type: "error", msg: log.msg })
-            console.log(log.msg);
         } else {
-            dispatch(setLogin({ id: log.chave, name: log.nome, token: log.token }));
+            await Util.setStorageItem("login", { id: log.chave, name: log.nome, token: log.token });
             props.goHome();
         }
     };
@@ -37,8 +35,7 @@ export function LoginForm(props: ILoginForm) {
                 const op: IOperador[] = [];
 
                 if (response.error) {
-                    setAlert({ type: "error", msg: response.error.msg })
-                    console.log(response.error.msg);
+                    setAlert({ type: "error", msg: response.msg })
                 } else {
                     response.filter((res: any) => res.operadores[0]).map((res: any) => res.operadores.map((operador: IOperador) => op.push(operador)));
                 }

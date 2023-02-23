@@ -1,4 +1,4 @@
-import React, { type PropsWithChildren } from 'react';
+import React, { type PropsWithChildren, useEffect } from 'react';
 import { FixatedStatusBar } from '../../components/fixatedStatusBar';
 import { defaultColors } from '../../config/constants';
 import { LoginBottomHalf, LoginLogo, LoginTopHalf, Page, LinkRecuperacao, SigninButton, SigninButtonText, LinkRecuperacaoView } from '../../styled';
@@ -6,19 +6,23 @@ import { Link } from '@react-navigation/native';
 import { Footer } from '../../components/footer';
 import { ILogin } from './ILogin';
 import { useNavigation } from '@react-navigation/native';
-import Rest from '../../classes/Rest';
-import { selectLogin } from '../../store/reducers/mainReducer';
-import { useSelector } from 'react-redux';
 import { LoginForm } from '../../components/loginForm';
+import Util from '../../classes/Utils';
 
 export function Login(props: ILogin) {
-    const logged = useSelector(selectLogin);
     const navigation = useNavigation();
 
-    if (logged?.id) {
-        navigation.navigate("Home");
-    }
-    
+    useEffect(() => {
+        (async () => {
+            const logged = await Util.getStorageItem("login")
+            console.log(logged);
+
+            if (logged && logged?.id) {
+                navigation.navigate("Home");
+            }
+        })()
+    }, [])
+
     const goHome = () => {
         navigation.navigate("Home");
     }
@@ -31,7 +35,7 @@ export function Login(props: ILogin) {
                 <LoginLogo resizeMode='contain' source={require("../../images/logo.png")} />
             </LoginTopHalf>
             <LoginBottomHalf>
-                <LoginForm goHome={goHome}/>
+                <LoginForm goHome={goHome} />
 
                 <LinkRecuperacaoView>
                     <Link to={{ screen: 'Recuperar_Senha' }}>

@@ -5,7 +5,8 @@ export default class Util {
 
     static async setStorageItem(item: string, value: any) {
         try {
-            return await useAsyncStorage(item).setItem(value);
+            console.log(JSON.stringify(value));
+            return await useAsyncStorage(item).setItem(JSON.stringify(value));
         } catch (err) {
             console.log(err);
         }
@@ -13,7 +14,10 @@ export default class Util {
 
     static async getStorageItem(item: string) {
         try {
-            return await useAsyncStorage(item).getItem();
+            const store = await useAsyncStorage(item).getItem();
+
+            if (store) console.log(JSON.parse(store));
+            return store ? JSON.parse(store) : null;
         } catch (err) {
             console.log(err);
         }

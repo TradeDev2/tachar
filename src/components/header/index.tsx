@@ -1,13 +1,10 @@
 import React, { type PropsWithChildren, useState } from 'react';
-import { Alert } from 'react-native';
 import { HeaderChevron, IconCart, NotificationCartView, NotificationCart, HeaderView, HeaderLogoView, HeaderLogo, HeaderTitleView, HeaderTitle } from '../../styled';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { IHeader } from './IHeader';
-import { useDispatch } from 'react-redux';
-import { setLogout } from '../../store/reducers/mainReducer';
+import Util from '../../classes/Utils';
 
 export function Header(props: IHeader) {
-    const dispatch = useDispatch();
     const [notifications, setNotifications] = useState<number>(0);
 
     return (
@@ -18,7 +15,7 @@ export function Header(props: IHeader) {
                 </HeaderChevron>
             }
             {props.logout &&
-                <HeaderChevron style={{ backgroundColor: "black" }} onPress={() => { /*dispatch(setLogout());*/ props.navigation.goBack() }}>
+                <HeaderChevron style={{ backgroundColor: "black" }} onPress={async () => { await Util.setStorageItem("login", {id: 0, name: "", token: ""}); props.navigation.goBack() }}>
                     <Icon name="logout" size={30} color="red" />
                 </HeaderChevron>
             }

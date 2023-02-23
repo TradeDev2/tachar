@@ -1,19 +1,18 @@
-import React, { type PropsWithChildren } from 'react';
+import React, { type PropsWithChildren, useState } from 'react';
 import { Dimensions } from 'react-native';
 import { Header } from '../../components/header';
 import { FixatedStatusBar } from '../../components/fixatedStatusBar';
 import { ButtonLink, ButtonLinkIcon, ButtonLinks, ButtonLinkText, Page, PageTitle, PageTitleView, Scrollable } from '../../styled';
 import { useNavigation } from '@react-navigation/native';
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import { selectLogin } from '../../store/reducers/mainReducer';
+import Util from '../../classes/Utils';
 
 const windowWidth = Dimensions.get('window').width;
 
 export function HomeScreen() {
-    const logged = useSelector(selectLogin);
     const navigation = useNavigation();
+    const [logged, setLogged] = useState<any>({id: 0, name: "", token: ""});
     const links = [
         { name: "Acertos", icon: "hourglass-empty", link: "Acertos" },
         { name: "Parcelas em Aberto", icon: "person-pin", link: "Parcelas_Aberto" },
@@ -25,16 +24,20 @@ export function HomeScreen() {
 
     useEffect(() => {
         (async () => {
-            if (!logged.id) {
+            const log = await Util.getStorageItem("login");
+            setLogged(log);
+
+            if (!log || !log.id) {
                 navigation.navigate("Login");
             }
         })();
-    },[]);
+    }, [])
+
 
     return (
         <Page>
             <FixatedStatusBar />
-            <Header navigation={navigation} logout={true}/>
+            <Header navigation={navigation} logout={true} />
             <Scrollable>
                 <PageTitleView>
                     <PageTitle>Seja bem-vinda(o) {logged.name}</PageTitle>
