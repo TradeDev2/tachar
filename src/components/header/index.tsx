@@ -5,7 +5,7 @@ import { IHeader } from './IHeader';
 import Util from '../../classes/Utils';
 
 export function Header(props: IHeader) {
-    const [notifications, setNotifications] = useState<number>(0);
+    const [items, setItems] = useState<number>(0);
 
     return (
         <HeaderView>
@@ -15,20 +15,20 @@ export function Header(props: IHeader) {
                 </HeaderChevron>
             }
             {props.logout &&
-                <HeaderChevron style={{ backgroundColor: "black" }} onPress={async () => { await Util.setStorageItem("login", {id: 0, name: "", token: ""}); props.navigation.goBack() }}>
+                <HeaderChevron onPress={async () => { await Util.setStorageItem("login", {id: 0, name: "", token: ""}); props.navigation.goBack() }}>
                     <Icon name="logout" size={30} color="red" />
                 </HeaderChevron>
             }
             {!props.hideCart &&
                 <>
                     <IconCart name="shopping-cart" size={32} color="#FFFFFF"/>
-                    {notifications > 0 &&
+                    {items > 0 &&
                         <NotificationCartView>
-                            {notifications <= 9 &&
-                                <NotificationCart>{notifications}</NotificationCart>
+                            {items <= 99 &&
+                                <NotificationCart>{items}</NotificationCart>
                             }
-                            {notifications > 9 &&
-                                <NotificationCart>9+</NotificationCart>
+                            {items > 99 &&
+                                <NotificationCart>99+</NotificationCart>
                             }
                         </NotificationCartView>
                     }

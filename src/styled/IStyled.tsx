@@ -11,12 +11,15 @@ export interface IStyledProps {
     login?:boolean,
     left?: number,
     segments?: number,
-    type?: string
+    type?: string,
+    padding?: number,
+    colSpan?: number
 }
 
 export const defaultProps = {
-    background: "#000000",
+    background: "#111111",
     letter: "#FFFFFF",
-    item: "#454545",
+    item: "#232323",
+    blackItem: "#000000",
     mgTop: 0
 }

@@ -34,8 +34,9 @@ export function LoginForm(props: ILoginForm) {
                 const response = await Rest.postBase("touch", { password: DB_SENHA, cnpj: DB_CNPJ }, "");
                 const op: IOperador[] = [];
 
+                console.log(response);
                 if (response.error) {
-                    setAlert({ type: "error", msg: response.msg })
+                    setAlert({ type: "error", msg: response.msg.message })
                 } else {
                     response.filter((res: any) => res.operadores[0]).map((res: any) => res.operadores.map((operador: IOperador) => op.push(operador)));
                 }

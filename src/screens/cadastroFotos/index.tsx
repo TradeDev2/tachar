@@ -27,8 +27,7 @@ export function CadastroFotos({ route }: any, props: ICadastroFotos) {
     const typeF = RNCamera.Constants.Type.front;
     const typeB = RNCamera.Constants.Type.back;
     const camera = useRef<RNCamera>(null)
-    const a = {user_id: 1, user_name: 3};
-    const { user_id, user_name } = a;//route.params;
+    const { user_id, user_name } = route.params;
 
     const [activePic, setActivePic] = useState<string>("");
 

@@ -243,12 +243,24 @@ export const FooterText = styled(Text) <IStyledProps>`
     text-align:center;
     color: white;
 `;
+
+export const FooterImageView = styled(View)<IStyledProps>`
+    width: 100%;
+    padding-bottom: 23px;
+`;
+
+export const FooterImage = styled(Image)<IStyledProps>`
+    resize-mode: contain;
+    width: ${windowWidth}px;
+    height: ${windowWidth * 0.4}px;
+    `;
 //
 
 //Header
 export const HeaderView = styled(View) <IStyledProps>`
     width: 100%;
     height: ${windowHeight / 4}px;
+    background-color: ${props => props.background ? props.background : defaultProps.background};
     
 `;
 
@@ -263,7 +275,7 @@ export const HeaderChevron = styled(TouchableOpacity) <IStyledProps>`
     position: absolute;
     left: 10px;
     top: ${(windowHeight / 8) - 20}px;
-    background-color: #232323;
+    background-color: ${props => props.background ? props.background : defaultProps.background};
 `;
 
 export const HeaderLogoView = styled(View) <IStyledProps>`
@@ -279,17 +291,14 @@ export const HeaderLogo = styled(Image) <IStyledProps>`
 `;
 
 export const HeaderTitleView = styled(View) <IStyledProps>`
-    width: ${windowWidth - 120}px;
-    margin-left: 60px;
+    width: ${windowWidth}px;
     height: ${windowHeight / 10 - 10}px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
 `;
 
 export const HeaderTitle = styled(Text) <IStyledProps>`
-    font-size: 25px;
+    ${props => props.width ? `width: ${props.width};` : ""};
+    text-align: center;
+    font-size: 20px;
     font-weight: bolder;
     color: white;
 `;
@@ -334,7 +343,7 @@ export const ButtonLinks = styled(View) <IStyledProps>`
 
 export const ButtonLink = styled(TouchableOpacity) <IStyledProps>`
     width: ${props => props.width ? props.width : windowWidth / 3}px;
-    margin: 15px;
+    margin: 10px 5px 10px 5px;
     height: 50px;
     display: flex;
     flex-direction: row;
@@ -347,7 +356,7 @@ export const ButtonLink = styled(TouchableOpacity) <IStyledProps>`
 export const ButtonLinkText = styled(Text) <IStyledProps>`
     width: 80%;
     text-align: center;
-    font-size: 15px;
+    font-size: 18px;
     color: #D4AF00;
     letter-spacing: ${props => props.letterSpace ? props.letterSpace : 0}px;
 `;
@@ -499,5 +508,41 @@ export const CenterView = styled(View) <IStyledProps>`
 `;
 
 export const BaseTouchable = styled(TouchableOpacity) <IStyledProps>`
+`;
+
+export const Table = styled(View)<IStyledProps>`
+    min-width: ${props => props.width ? props.width : windowWidth}px;
+    background-color: ${props => props.background ? props.background : defaultProps.item};
+    display: flex;
+    flex-direction: column;
+    border: 1px solid black;
+    border-collapse: collapse;
+`;
+
+export const Row = styled(View)<IStyledProps>`
+    display: flex;
+    flex-direction: row;
+`; 
+
+export const TableTitle = styled(View)<IStyledProps>`
+    padding: ${props => props.padding ? props.padding : 5}px;
+    width: ${props => props.width ? props.width : props.colSpan ? 100 * props.colSpan : 100}px;
+`;
+
+export const TableTitleText = styled(Text)<IStyledProps>`
+    color: #222222;
+    font-weight: bold;
+    font-size: 15px;
+    `;
+
+export const Cell = styled(View)<IStyledProps>`
+    padding: ${props => props.padding ? props.padding : 5}px;
+    width: ${props => props.width ? props.width : props.colSpan ? 100 * props.colSpan : 100}px;
+`;
+
+export const CellText = styled(Text)<IStyledProps>`
+    color: #444444;
+    text-overflow: ellipsis;
+    font-size: 13px;
 `;
 //

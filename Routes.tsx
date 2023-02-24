@@ -6,6 +6,7 @@ import { Login } from './src/screens/login';
 import { Cadastro } from './src/screens/cadastro';
 import { CadastroFotos } from './src/screens/cadastroFotos';
 import { Acertos } from './src/screens/acertos';
+import { Acertos_Detalhes } from './src/screens/acertosDetalhes';
 
 const Stack = createNativeStackNavigator<IRoutes>();
 
@@ -18,6 +19,7 @@ export default function Routes() {
       <Stack.Screen name="Cadastro" component={Cadastro} options={{ headerShown: false }} />
       <Stack.Screen name="Cadastro_Fotos" component={CadastroFotos} options={{ headerShown: false }} />
       <Stack.Screen name="Acertos" component={Acertos} options={{ headerShown: false }} />
+      <Stack.Screen name="Acertos_Detalhes" component={Acertos_Detalhes} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 };

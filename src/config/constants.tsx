@@ -8,7 +8,7 @@ export const defaultColors = {
     item: isDarkMode ? "#212121" : "#212121"
 }
 
-export const DB_URL = "http://ftptrade.ddns.net:3003/"
+export const DB_URL = "http://192.168.15.22:3334/"
 export const DB_SENHA = "816";
 export const DB_CNPJ = "55555555555555";
 
