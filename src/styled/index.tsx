@@ -1,5 +1,6 @@
 import { Dimensions, View, Image, TextInput, TouchableOpacity, Text, Animated, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import SelectDropdown from 'react-native-select-dropdown'
 import { RNCamera } from 'react-native-camera';
 import styled from 'styled-components';
 import { IStyledProps, defaultProps } from './IStyled';
@@ -23,7 +24,7 @@ export const FloatPage = styled(Animated.ScrollView) <IStyledProps>`
 
 export const PageTitleView = styled(View) <IStyledProps>`
     width: 100%;
-    padding: 20px;
+    padding: 0px 0px 10px 0px;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -163,6 +164,10 @@ ${props => props.login ? `
     color: #D4AF00;
 `
     }
+`;
+
+export const Select = styled(SelectDropdown)<IStyledProps>`
+
 `;
 
 export const SubmitField = styled(View) <IStyledProps>`
@@ -517,6 +522,7 @@ export const Table = styled(View)<IStyledProps>`
     flex-direction: column;
     border: 1px solid black;
     border-collapse: collapse;
+    margin-bottom: 35px;
 `;
 
 export const Row = styled(View)<IStyledProps>`
@@ -527,10 +533,12 @@ export const Row = styled(View)<IStyledProps>`
 export const TableTitle = styled(View)<IStyledProps>`
     padding: ${props => props.padding ? props.padding : 5}px;
     width: ${props => props.width ? props.width : props.colSpan ? 100 * props.colSpan : 100}px;
+    background-color: black;
+    border: 1px solid white;
 `;
 
 export const TableTitleText = styled(Text)<IStyledProps>`
-    color: #222222;
+    color: white;
     font-weight: bold;
     font-size: 15px;
     `;
@@ -540,8 +548,22 @@ export const Cell = styled(View)<IStyledProps>`
     width: ${props => props.width ? props.width : props.colSpan ? 100 * props.colSpan : 100}px;
 `;
 
+export const InputTable = styled(TextInput)<IStyledProps>`
+    ${props => props.disabled ? 
+        `color: #878787;` :
+        `color: ${props.letter ? props.letter : "black"};`
+    }
+    padding: ${props => props.padding ? props.padding : 5}px;
+    width: ${props => props.width ? props.width : props.colSpan ? 50 * props.colSpan : 50}px;
+    border: 1px solid #878787;
+    ${props => props.disabled ? `background-color: #CCCCCC;` : ""}
+    border-radius: 5px;
+    height: 30px;
+    font-size: 15px;
+`;
+
 export const CellText = styled(Text)<IStyledProps>`
-    color: #444444;
+    color: ${props => props.type ? props.type == "error" ? "red" : props.type == "success" ? "green" : props.type == "disabled" ? "#777777" : "#444444" : "#444444"};
     text-overflow: ellipsis;
     font-size: 13px;
 `;

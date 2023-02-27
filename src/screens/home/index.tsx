@@ -2,7 +2,7 @@ import React, { type PropsWithChildren, useState } from 'react';
 import { Dimensions } from 'react-native';
 import { Header } from '../../components/header';
 import { FixatedStatusBar } from '../../components/fixatedStatusBar';
-import { ButtonLink, ButtonLinkIcon, ButtonLinks, ButtonLinkText, FooterImage, FooterImageView, Page, PageTitle, PageTitleView, Scrollable } from '../../styled';
+import { ButtonLink, ButtonLinkIcon, ButtonLinks, ButtonLinkText, Page, Scrollable } from '../../styled';
 import { useNavigation } from '@react-navigation/native';
 import { useEffect } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons'

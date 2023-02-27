@@ -1,31 +1,24 @@
-import React, { type PropsWithChildren, useState, useEffect, useRef } from 'react';
-import { Animated, Dimensions, Easing, View } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons'
+import React, { type PropsWithChildren, useState, useEffect } from 'react';
+import { Dimensions } from 'react-native';
 import { Header } from '../../components/header';
 import { FixatedStatusBar } from '../../components/fixatedStatusBar';
-import { Table, Field, FlipPageButton, FloatPage, FormMain, HeaderChevron, Input, Label, LabelText, Page, PageTitle, PageTitleView, Scrollable, SubmitButton, SubmitButtonText, SubmitField, Row, TableTitle, TableTitleText, Cell, CellText } from '../../styled';
+import { Table, Page, Scrollable, Row, TableTitle, TableTitleText, Cell, CellText } from '../../styled';
 import { IAcertos, IAcerto } from './IAcertos';
 import { Link, useNavigation } from '@react-navigation/native';
 import Rest from '../../classes/Rest';
-import { DB_CNPJ, DB_SENHA } from '../../config/constants';
 import Loading from '../../components/loading';
-import { useSelector } from 'react-redux';
-import { selectLogin } from '../../store/reducers/reducers';
-import { Text } from 'react-native/Libraries/Text/Text';
 import dayjs from 'dayjs';
 import Util from '../../classes/Utils';
 import { IAlertMessage } from '../../interfaces/IGeneral';
 import { Alert } from '../../components/alert';
-
-const windowWidth = Dimensions.get('window').width;
 
 export function Acertos(props: IAcertos) {
     const navigation = useNavigation();
     const [logged, setLogged] = useState<any>({ id: 0, name: "", token: "" });
     const tableTitles = [
         {name: "Nº Reserva", colSpan: 1}, 
-        {name: "Valor", colSpan: 1},
-        {name: "Data Acerto", colSpan: 1}, 
+        {name: "Val", colSpan: 1},
+        {name: "Data", colSpan: 1}, 
         {name: "", colSpan: 0}];
 
     const [alert, setAlert] = useState<IAlertMessage>({ type: "", msg: "" });
@@ -81,7 +74,7 @@ export function Acertos(props: IAcertos) {
                                 <Cell><CellText>{acerto.nota_fiscal}</CellText></Cell>
                                 <Cell><CellText>R${Util.formatMoney(acerto.total)}</CellText></Cell>
                                 <Cell><CellText>{dayjs(acerto.lancamento).format("DD/MM/YYYY")}</CellText></Cell>
-                                <Cell><CellText><Link style={{ textAlign: "center", minWidth: 50 }} to={{ screen: "Acertos_Detalhes", params: { chave_mov: acerto.chave } }}>+</Link></CellText></Cell>
+                                <Cell><CellText><Link style={{ textAlign: "center", minWidth: 50 }} to={{ screen: "Acertos_Detalhes", params: { chave_mov: acerto.chave } }}>Realizar Acerto</Link></CellText></Cell>
                             </Row>
                         ))}
                     </Table>

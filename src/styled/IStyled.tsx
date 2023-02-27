@@ -13,7 +13,8 @@ export interface IStyledProps {
     segments?: number,
     type?: string,
     padding?: number,
-    colSpan?: number
+    colSpan?: number,
+    disabled?: boolean,
 }
 
 export const defaultProps = {

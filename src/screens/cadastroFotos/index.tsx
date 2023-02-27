@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 import { ICadastroFotos } from './ICadastroFotos';
 import { Header } from '../../components/header';
 import { RNCamera } from 'react-native-camera';
-import { Animated, Easing, Dimensions, Alert } from 'react-native';
+import { Animated, Easing, Dimensions } from 'react-native';
 import { Link } from '@react-navigation/native';
 import Util from '../../classes/Utils';
 import Rest from '../../classes/Rest';

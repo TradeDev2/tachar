@@ -1,5 +1,5 @@
 import React, { type PropsWithChildren, useState, useEffect} from 'react';
-import { IAlert, IAlertMessage } from './IAlert';
+import { IAlert } from './IAlert';
 import { AlertMessage, AlertPressable } from '../../styled';
 
 export function Alert(props: IAlert) {
