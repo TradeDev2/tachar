@@ -1,4 +1,4 @@
-import { Dimensions, View, Image, TextInput, TouchableOpacity, Text, Animated, ScrollView } from 'react-native';
+import { Dimensions, View, Image, TextInput, TouchableOpacity, Text, Animated, ScrollView, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import SelectDropdown from 'react-native-select-dropdown'
 import { RNCamera } from 'react-native-camera';
@@ -167,7 +167,6 @@ ${props => props.login ? `
 `;
 
 export const Select = styled(SelectDropdown)<IStyledProps>`
-
 `;
 
 export const SubmitField = styled(View) <IStyledProps>`
@@ -512,7 +511,7 @@ export const CenterView = styled(View) <IStyledProps>`
     align-items: center;
 `;
 
-export const BaseTouchable = styled(TouchableOpacity) <IStyledProps>`
+export const BaseTouchable = styled(TouchableWithoutFeedback) <IStyledProps>`
 `;
 
 export const Table = styled(View)<IStyledProps>`

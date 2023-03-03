@@ -9,6 +9,8 @@ export interface IAcerto_Detalhe {
     codigo_digitado: string,
     quantidade: string,
     type?: string
+    quantVendido?: number,
+    quantDevolvido?: number
 }
 
 export interface ISummary {

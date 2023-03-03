@@ -74,7 +74,7 @@ export function Acertos(props: IAcertos) {
                                 <Cell><CellText>{acerto.nota_fiscal}</CellText></Cell>
                                 <Cell><CellText>R${Util.formatMoney(acerto.total)}</CellText></Cell>
                                 <Cell><CellText>{dayjs(acerto.lancamento).format("DD/MM/YYYY")}</CellText></Cell>
-                                <Cell><CellText><Link style={{ textAlign: "center", minWidth: 50 }} to={{ screen: "Acertos_Detalhes", params: { chave_mov: acerto.chave } }}>Realizar Acerto</Link></CellText></Cell>
+                                <Cell><CellText><Link style={{ textAlign: "center", minWidth: 50, color: "blue", textDecorationLine: "underline" }} to={{ screen: "Acertos_Detalhes", params: { chave_mov: acerto.chave } }}>Realizar Acerto</Link></CellText></Cell>
                             </Row>
                         ))}
                     </Table>
