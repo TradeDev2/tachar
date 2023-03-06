@@ -37,7 +37,7 @@ export function HomeScreen() {
     return (
         <Page>
             <FixatedStatusBar />
-            <Header navigation={navigation} logout={true} title={`Seja bem-vinda(o) ${logged.name}`} />
+            <Header navigation={navigation} logout={true} title={logged.name} />
             <Scrollable>
                 <ButtonLinks mgBottom={20}>
                     {links.map((link, linkIndex) => (
@@ -46,7 +46,7 @@ export function HomeScreen() {
                                 shadowOffset: { width: 20, height: 20 },
                                 shadowColor: 'black',
                                 shadowOpacity: 1,
-                                elevation: 2,
+                                elevation: 10,
                             }}
                             key={linkIndex} width={windowWidth / 1.1} onPress={() => navigation.navigate(link.link)}>
                             <ButtonLinkText>{link.name}</ButtonLinkText>

@@ -60,7 +60,7 @@ export const Scrollable = styled(ScrollView) <IStyledProps>`
 
 //login
 export const LoginTopHalf = styled(View) <IStyledProps>`
-    background-color: ${props => props.background ? props.background : defaultProps.item};
+    background-color: ${props => props.background ? props.background : defaultProps.blackItem};
     height: ${windowHeight / 2.5}px;
     display: flex;
     flex-direction: row;
@@ -102,7 +102,7 @@ ${props => props.login ? `
     height: 40px;
     margin-left: 10%;
     border: 1px solid ${props.letter ? props.letter : defaultProps.letter};
-    border-radius: 20px;
+    border-radius: 5px;
     background-color: ${props.background ? props.background : "white"};
     color: ${props.letter ? props.letter : "#D4AF00"};
     display: flex;
@@ -130,8 +130,8 @@ ${props => props.login ? `
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    border-top-left-radius: 20px;
-    border-bottom-left-radius: 20px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
 
     ` : `
         width: 100%;
@@ -155,8 +155,8 @@ ${props => props.login ? `
     border: none;
     background-color: inherit;
     color: #D4AF00;
-    border-top-right-radius: 20px;
-    border-bottom-right-radius: 20px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
     ` : `
     border: 1px solid ${props.letter ? props.letter : defaultProps.letter};
     border-radius: 10px;
@@ -348,12 +348,14 @@ export const ButtonLinks = styled(View) <IStyledProps>`
 export const ButtonLink = styled(TouchableOpacity) <IStyledProps>`
     width: ${props => props.width ? props.width : windowWidth / 3}px;
     margin: 10px 5px 10px 5px;
-    height: 50px;
+    height: 65px;
+    padding-left: 10px;
+    padding-right: 10px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    border-radius: 5px;
+    border-radius: 20px;
     background-color: ${props => props.background ? props.background : defaultProps.item};
 `;
 
@@ -563,6 +565,7 @@ export const InputTable = styled(TextInput)<IStyledProps>`
 
 export const CellText = styled(Text)<IStyledProps>`
     color: ${props => props.type ? props.type == "error" ? "red" : props.type == "success" ? "green" : props.type == "disabled" ? "#777777" : "#444444" : "#444444"};
+    text-align: ${props => props.align ? props.align : "left"};
     text-overflow: ellipsis;
     font-size: 13px;
 `;

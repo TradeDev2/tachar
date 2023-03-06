@@ -3,7 +3,7 @@ import { Dimensions } from 'react-native';
 import { Header } from '../../components/header';
 import { FixatedStatusBar } from '../../components/fixatedStatusBar';
 import { Table, Page, Scrollable, Row, TableTitle, TableTitleText, Cell, CellText } from '../../styled';
-import { IAcertos, IAcerto } from './IAcertos';
+import { IAcertos, IAcerto, ITableTitles } from './IAcertos';
 import { Link, useNavigation } from '@react-navigation/native';
 import Rest from '../../classes/Rest';
 import Loading from '../../components/loading';
@@ -12,20 +12,39 @@ import Util from '../../classes/Utils';
 import { IAlertMessage } from '../../interfaces/IGeneral';
 import { Alert } from '../../components/alert';
 
+const windowWidth = Dimensions.get('window').width;
+
 export function Acertos(props: IAcertos) {
     const navigation = useNavigation();
     const [logged, setLogged] = useState<any>({ id: 0, name: "", token: "" });
-    const tableTitles = [
-        {name: "Nº Reserva", colSpan: 1}, 
-        {name: "Val", colSpan: 1},
-        {name: "Data", colSpan: 1}, 
-        {name: "", colSpan: 0}];
+    const tableTitles:ITableTitles[] = [
+        {name: "Nº Reserva", colspan: 1}, 
+        {name: "Val", colspan: 1},
+        {name: "Data", colspan: 1}, 
+        {name: "", colspan: 0}];
 
     const [alert, setAlert] = useState<IAlertMessage>({ type: "", msg: "" });
     const [loading, setLoading] = useState<boolean>(true);
 
     const [acertos, setAcertos] = useState<IAcerto[]>([]);
 
+    let tableWidth = 0;
+
+    tableTitles.map((title:ITableTitles) => {
+        if (title.colspan) {
+            tableWidth += title.colspan * 100;
+        } else {
+            tableWidth += 100;
+        }
+
+    })
+    if (tableWidth < windowWidth) {
+        const lastIndex = tableTitles[tableTitles.length-1];
+
+        tableTitles[tableTitles.length-1].width = (lastIndex && lastIndex.colspan ? lastIndex.colspan * 100 : 0) + (windowWidth-tableWidth) 
+    }
+    
+    
     useEffect(() => {
         (async () => {
             const log = await Util.getStorageItem("login");
@@ -66,7 +85,7 @@ export function Acertos(props: IAcertos) {
                     <Table background='white'>
                         <Row>
                             {tableTitles.map((title, titleIndex) => (
-                                <TableTitle colSpan={title.colSpan} key={titleIndex}><TableTitleText>{title.name}</TableTitleText></TableTitle>
+                                <TableTitle colSpan={title.colspan} key={titleIndex}><TableTitleText>{title.name}</TableTitleText></TableTitle>
                             ))}
                         </Row>
                         {acertos.map((acerto, acertoIndex) => (
@@ -78,18 +97,6 @@ export function Acertos(props: IAcertos) {
                             </Row>
                         ))}
                     </Table>
-                    {/* <Table style={{ minWidth: windowWidth, backgroundColor: "white" }}>
-                        <Row data={tableTitle} style={{color: "#222222"}}/>
-                        {acertos.map((acerto, acertoIndex) => (
-                            <TableWrapper key={acertoIndex} style={{ flexDirection: 'row' }}>
-                                <Cell data={acerto.nota_fiscal} />
-                                <Cell data={`R$${Util.formatMoney(acerto.total)}`} />
-                                <Cell data={dayjs(acerto.lancamento).format("DD/MM/YYYY")} />
-                                <Cell style={{ maxWidth: 50 }} data={renderLink(acerto.chave)} />
-                            </TableWrapper>
-                        ))}
-
-                    </Table> */}
                 </Scrollable>
             </Scrollable>
         </Page >

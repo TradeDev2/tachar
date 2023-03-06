@@ -19,7 +19,6 @@ export function Acertos_Detalhes_Tables(props: IAcertos_Detalhes_Tables) {
 
                             return (
                                 <Row key={itemIndex}>
-                                    <BaseTouchable onPress={() => addFunction()}><Cell width={50}><CellText>{type == "" ? "+" : "-"}</CellText></Cell></BaseTouchable>
                                     <BaseTouchable onPress={() => addFunction()}><Cell><CellText type={type ? type : ""}>{item.descricao}</CellText></Cell></BaseTouchable>
                                     <BaseTouchable onPress={() => addFunction()}><Cell><CellText type={type ? type : ""}>R${Util.formatMoney(item.valor_total)}</CellText></Cell></BaseTouchable>
                                     <BaseTouchable onPress={() => addFunction()}><Cell colSpan={0.5}><CellText type={type ? type : ""}>{parseInt(item.quantidade)}</CellText></Cell></BaseTouchable>

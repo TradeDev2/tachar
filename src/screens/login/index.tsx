@@ -31,7 +31,7 @@ export function Login(props: ILogin) {
         <Page>
 
             <FixatedStatusBar />
-            <LoginTopHalf background={defaultColors.item}>
+            <LoginTopHalf background={defaultColors.background}>
                 <LoginLogo resizeMode='contain' source={require("../../images/logo.png")} />
             </LoginTopHalf>
             <LoginBottomHalf>

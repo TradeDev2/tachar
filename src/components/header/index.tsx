@@ -15,8 +15,8 @@ export function Header(props: IHeader) {
                 </HeaderChevron>
             }
             {props.logout &&
-                <HeaderChevron onPress={async () => { await Util.setStorageItem("login", {id: 0, name: "", token: ""}); props.navigation.goBack() }}>
-                    <Icon name="logout" size={30} color="red" />
+                <HeaderChevron background={"white"} onPress={async () => { await Util.setStorageItem("login", {id: 0, name: "", token: ""}); props.navigation.goBack() }}>
+                    <Icon name="logout" size={30} color={"black"} />
                 </HeaderChevron>
             }
             {!props.hideCart &&

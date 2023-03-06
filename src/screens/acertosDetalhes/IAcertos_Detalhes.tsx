@@ -21,3 +21,10 @@ export interface ISummary {
     total: number,
     totalDesconto:number
 }
+
+export interface ITableTitles {
+    title: string,
+    alt?: string,
+    colspan?: number,
+    width?: number
+}

@@ -8,3 +8,10 @@ export interface IAcerto {
     lancamento: string,
     nota_fiscal: string
 }
+
+export interface ITableTitles {
+    name: string,
+    alt?: string,
+    colspan?: number,
+    width?: number
+}

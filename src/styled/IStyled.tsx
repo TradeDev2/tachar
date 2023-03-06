@@ -15,12 +15,13 @@ export interface IStyledProps {
     padding?: number,
     colSpan?: number,
     disabled?: boolean,
+    align?: string
 }
 
 export const defaultProps = {
-    background: "#111111",
+    background: "#222222",
     letter: "#FFFFFF",
-    item: "#232323",
+    item: "#323232",
     blackItem: "#000000",
     mgTop: 0
 }

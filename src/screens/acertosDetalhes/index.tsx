@@ -3,7 +3,7 @@ import { Dimensions } from 'react-native';
 import { Header } from '../../components/header';
 import { FixatedStatusBar } from '../../components/fixatedStatusBar';
 import { Table, Row, TableTitle, TableTitleText, Cell, CellText, Page, Scrollable, InputTable, BaseTouchable, PageTitle, PageTitleView, Select, CenterView, SubmitButton, SubmitButtonText } from '../../styled';
-import { IAcertos_Detalhes, IAcerto_Detalhe, ISummary } from './IAcertos_Detalhes';
+import { IAcertos_Detalhes, IAcerto_Detalhe, ISummary, ITableTitles } from './IAcertos_Detalhes';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import Rest from '../../classes/Rest';
@@ -23,8 +23,28 @@ export function Acertos_Detalhes({ route }: any, props: IAcertos_Detalhes) {
     const CHANGE_QUANTITY = "change_quantity";
     const DESCONTO_PORCENTAGEM = 30;
 
-    const tableTitles = [
-        { title: "", width: 50 }, { title: "Nome" }, { title: "Val" }, { title: "Qtd", colspan: 0.5 }, { title: "Nº Vend.", width: 75, alt: "Nº Devo." }];
+    const tableTitles: ITableTitles[] = [
+        { title: "Nome" }, { title: "Val" }, { title: "Qtd", colspan: 0.5 }, { title: "Nº Vend.", width: 75, alt: "Nº Devo." }];
+
+        let tableWidth = 0;
+
+        tableTitles.map((title:ITableTitles) => {
+            if (title.colspan) {
+                tableWidth += title.colspan * 100;
+            } else if (title.width) {
+                tableWidth += title.width;
+            } else {
+                tableWidth += 100;
+            }
+    
+        })
+        if (tableWidth < windowWidth) {
+            const lastIndex = tableTitles[tableTitles.length-1];
+    
+            tableTitles[tableTitles.length-1].width = (lastIndex && lastIndex.colspan ? lastIndex.colspan * 100 : 0) + (lastIndex && lastIndex.width ? lastIndex.width : 0) + (windowWidth-tableWidth) 
+        }
+
+
     const [logged, setLogged] = useState<any>({ id: 0, name: "", token: "" });
     const { chave_mov } = route.params;
 
@@ -172,7 +192,7 @@ export function Acertos_Detalhes({ route }: any, props: IAcertos_Detalhes) {
         }
 
         if (!condicao || !condicao.chave) {
-            setAlert({type: "error", msg: "Selecione uma condição de pagamento"});
+            setAlert({ type: "error", msg: "Selecione uma condição de pagamento" });
         }
 
         const vendidos = itens.filter((it: IAcerto_Detalhe) => it.quantVendido && it.quantVendido > 0);
@@ -232,7 +252,11 @@ export function Acertos_Detalhes({ route }: any, props: IAcertos_Detalhes) {
 
             <Header title="Acertos" navigation={navigation} />
             <PageTitleView>
-                <BaseTouchable onPress={() => setDevolucao(!devolucao)}><PageTitle>{devolucao ? "DEVOLVIDOS" : "VENDIDOS"} <Icon name="compare-arrows" size={17} color="white" /> </PageTitle></BaseTouchable>
+                <SubmitButton width={(windowWidth/2)-20} onPress={() => setDevolucao(!devolucao)}>
+                    <SubmitButtonText>
+                        {devolucao ? "DEVOLVIDOS" : "VENDIDOS"} <Icon name="compare-arrows" size={17} color="white" />
+                    </SubmitButtonText>
+                </SubmitButton>
             </PageTitleView>
             <Scrollable>
                 <Scrollable horizontal>
@@ -268,7 +292,7 @@ export function Acertos_Detalhes({ route }: any, props: IAcertos_Detalhes) {
                 </Scrollable>
 
                 <CenterView style={{ paddingBottom: 50 }}>
-                    <Select buttonStyle={{ width: windowWidth - 90 }} defaultButtonText='Método de Pagamento' data={condicoes[0] ? condicoes.map((cond) => cond.descricao) : []} onSelect={(e) => { setCondicao(condicoes[0] ? condicoes.find((cond:any) => cond.descricao == e) : []) }} />
+                    <Select buttonStyle={{ width: windowWidth - 90 }} defaultButtonText='Método de Pagamento' data={condicoes[0] ? condicoes.map((cond) => cond.descricao) : []} onSelect={(e) => { setCondicao(condicoes[0] ? condicoes.find((cond: any) => cond.descricao == e) : []) }} />
                 </CenterView>
 
                 {fase == 13 &&
