@@ -159,7 +159,7 @@ ${props => props.login ? `
     border-bottom-right-radius: 5px;
     ` : `
     border: 1px solid ${props.letter ? props.letter : defaultProps.letter};
-    border-radius: 10px;
+    border-radius: ${props.bRadius ? props.bRadius : 10}px;
     background-color: ${props.background ? props.background : "white"};
     color: #D4AF00;
 `
@@ -547,6 +547,7 @@ export const TableTitleText = styled(Text)<IStyledProps>`
 export const Cell = styled(View)<IStyledProps>`
     padding: ${props => props.padding ? props.padding : 5}px;
     width: ${props => props.width ? props.width : props.colSpan ? 100 * props.colSpan : 100}px;
+    background-color: ${props => props.background ? props.background : "white"};
 `;
 
 export const InputTable = styled(TextInput)<IStyledProps>`
@@ -564,6 +565,7 @@ export const InputTable = styled(TextInput)<IStyledProps>`
 `;
 
 export const CellText = styled(Text)<IStyledProps>`
+    ${props => props.width ? `width: ${props.width}px;` : ""}
     color: ${props => props.type ? props.type == "error" ? "red" : props.type == "success" ? "green" : props.type == "disabled" ? "#777777" : "#444444" : "#444444"};
     text-align: ${props => props.align ? props.align : "left"};
     text-overflow: ellipsis;

@@ -1,20 +1,56 @@
 import React, { type PropsWithChildren, useState, useEffect } from 'react';
+import { View, Text, Dimensions } from 'react-native';
 import { Header } from '../../components/header';
 import { FixatedStatusBar } from '../../components/fixatedStatusBar';
-import { Page } from '../../styled';
+import { Input, Page, Scrollable, Select } from '../../styled';
 import { IMinhas_Vendas } from './IMinhas_Vendas';
 import { useNavigation } from '@react-navigation/native';
 import Loading from '../../components/loading';
 import Util from '../../classes/Utils';
-import { IAlertMessage } from '../../interfaces/IGeneral';
+import { IAlertMessage, ITableTitles } from '../../interfaces/IGeneral';
 import { Alert } from '../../components/alert';
+import Rest from '../../classes/Rest';
+import dayjs, { locale } from 'dayjs';
+import { BaseTable } from '../../components/baseTable';
+require('dayjs/locale/pt')
+
+const windowWidth = Dimensions.get('window').width;
 
 export function Minhas_Vendas(props: IMinhas_Vendas) {
     const navigation = useNavigation();
     const [logged, setLogged] = useState<any>({ id: 0, name: "", token: "" });
-   
+    const tableTitles: ITableTitles[] = [
+        { title: "Prod.", colspan: 1.2 },
+        { title: "Data", colspan: 1 },
+        { title: "Val.", colspan: 0.7 }
+    ];
+
+    let tableWidth = 0;
+
+    tableTitles.map((title: ITableTitles) => {
+        if (title.width) {
+            tableWidth += title.width;
+        } else if (title.colspan) {
+            tableWidth += title.colspan * 100;
+        } else {
+            tableWidth += 100;
+        }
+
+    })
+    if (tableWidth < windowWidth) {
+        const lastIndex = tableTitles[tableTitles.length - 1];
+
+        tableTitles[tableTitles.length - 1].width = (lastIndex && lastIndex.colspan ? lastIndex.colspan * 100 : 0) + (lastIndex && lastIndex.width ? lastIndex.width : 0) + (windowWidth - tableWidth)
+    }
+
+
     const [alert, setAlert] = useState<IAlertMessage>({ type: "", msg: "" });
     const [loading, setLoading] = useState<boolean>(true);
+
+    const [codigoFiltro, setCodigoFiltro] = useState<string>("");
+    const [dataFiltro, setDataFiltro] = useState<string>(dayjs().locale("pt-br").format("MMM YYYY"));
+    const [produtoFiltro, setProdutoFiltro] = useState<string>("");
+    const [items, setItems] = useState<any[][]>([]);
 
     useEffect(() => {
         (async () => {
@@ -24,6 +60,14 @@ export function Minhas_Vendas(props: IMinhas_Vendas) {
             if (!log || !log.id) {
                 navigation.navigate("Login");
             }
+
+            const vend = await Rest.getBase(`movitens/vendas/${log.id}`, log.token);
+
+            setItems(vend.map((ven, venIndex) => ([
+                { value: ven.descricao, type: "string", colspan: 1.2 },
+                { value: ven.emissao, type: "date" },
+                { value: ven.valor_unitario, type: "money", colspan: 0.7 },
+            ])))
 
             setLoading(false);
         })();
@@ -42,7 +86,39 @@ export function Minhas_Vendas(props: IMinhas_Vendas) {
             <Alert alert={alert} setAlert={setAlert} />
 
             <Header title="Minhas Vendas" navigation={navigation} />
-            
+
+            <View style={{ marginLeft: 5, width: windowWidth - 10, display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+                <Input
+                    bRadius={1}
+                    value={codigoFiltro}
+                    onChangeText={(e: string) => setCodigoFiltro(e)}
+                    placeholder={"Código"}
+                    width={(windowWidth / 3) - 5}
+                />
+                <Input
+                    bRadius={1}
+                    value={produtoFiltro}
+                    onChangeText={(e: string) => setProdutoFiltro(e)}
+                    placeholder={"Produto"}
+                    width={(windowWidth / 3) - 5}
+                />
+                <Select
+                    data={[...[...Array(6)].map((e, index) => (dayjs().locale("pt-br").subtract(index, "month").format("MMM YYYY"))), "TODAS"]}
+                    onSelect={(e: string) => setDataFiltro(e)}
+                    defaultButtonText={"Data"}
+                    buttonStyle={{ width: (windowWidth / 3) - 5, backgroundColor: "white" }}
+                />
+            </View>
+
+            <Scrollable>
+                <Scrollable horizontal>
+                    <BaseTable
+                        itens={items}
+                        titles={tableTitles}
+                    />
+                </Scrollable>
+            </Scrollable>
+
         </Page >
     )
 }

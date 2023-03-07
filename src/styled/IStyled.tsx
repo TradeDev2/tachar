@@ -15,7 +15,8 @@ export interface IStyledProps {
     padding?: number,
     colSpan?: number,
     disabled?: boolean,
-    align?: string
+    align?: string,
+    bRadius?: number
 }
 
 export const defaultProps = {

@@ -10,7 +10,7 @@ export interface IAcerto {
 }
 
 export interface ITableTitles {
-    name: string,
+    title: string,
     alt?: string,
     colspan?: number,
     width?: number

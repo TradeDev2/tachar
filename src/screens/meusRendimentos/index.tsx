@@ -9,6 +9,8 @@ import Loading from '../../components/loading';
 import Util from '../../classes/Utils';
 import { IAlertMessage, ITableTitles } from '../../interfaces/IGeneral';
 import { Alert } from '../../components/alert';
+import Rest from '../../classes/Rest';
+import dayjs from 'dayjs';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -34,17 +36,16 @@ export function Meus_Rendimentos(props: IMeus_Rendimentos) {
 
     })
     if (tableWidth < windowWidth) {
-        console.log(windowWidth);
         const lastIndex = tableTitles[tableTitles.length - 1];
 
         tableTitles[tableTitles.length - 1].width = (lastIndex && lastIndex.colspan ? lastIndex.colspan * 100 : 0) + (lastIndex && lastIndex.width ? lastIndex.width : 0) + (windowWidth - tableWidth)
-        console.log(tableTitles);
     }
 
     const [alert, setAlert] = useState<IAlertMessage>({ type: "", msg: "" });
     const [loading, setLoading] = useState<boolean>(true);
 
     const [rendimentos, setRendimentos] = useState<any>([]);
+    const [total, setTotal] = useState<number>(0);
 
     useEffect(() => {
         (async () => {
@@ -55,9 +56,29 @@ export function Meus_Rendimentos(props: IMeus_Rendimentos) {
                 navigation.navigate("Login");
             }
 
+            const rend = await Rest.getBase(`mov/tachar/somarendimento?emissao=>=${dayjs().subtract(1, "year").format("YYYY-MM-DD")}&tipo==S&cancelada==0&pessoa==${log.id}&`,log.token)
+
+            if (rend.error) {
+                setAlert({type: "error", msg: rend.msg});
+                return setLoading(false);
+            }
+            
+            setRendimentos(rend);
+
             setLoading(false);
         })();
     }, [])
+
+    useEffect(() => {
+        let valorTotal = 0;
+
+        rendimentos.map((rend, rendIndex) => {
+            valorTotal += parseFloat(rend.rendimento);
+        })
+
+        setTotal(valorTotal);
+
+    }, [rendimentos])
 
     if (loading) {
         return (
@@ -83,14 +104,14 @@ export function Meus_Rendimentos(props: IMeus_Rendimentos) {
                         </Row>
                         {rendimentos.map((rendimento: any, rendimentoIndex: number) => (
                             <Row key={rendimentoIndex}>
-                                <Cell><CellText>{rendimento.cod}</CellText></Cell>
-                                <Cell><CellText>{rendimento.descricao}</CellText></Cell>
-                                <Cell><CellText>R${rendimento.data_abertura}</CellText></Cell>
+                                <Cell><CellText>{dayjs(rendimento.emissao).format("YYYY")}</CellText></Cell>
+                                <Cell><CellText>{dayjs(rendimento.emissao).locale("pt-br").format("MMM")}</CellText></Cell>
+                                <Cell><CellText>R${Util.formatMoney(rendimento.rendimento)}</CellText></Cell>
                             </Row>
                         ))}
                         <Row>
-                            <Cell colSpan={2}><CellText>Total</CellText></Cell>
-                            <Cell><CellText>R$0,00</CellText></Cell>
+                            <Cell background={"#DEDEDE"}colSpan={2}><CellText>Total</CellText></Cell>
+                            <Cell background={"#DEDEDE"} width={tableTitles[2].width}><CellText>R${Util.formatMoney(`${total}`)}</CellText></Cell>
                         </Row>
                     </Table>
                 </Scrollable>

@@ -11,40 +11,25 @@ import dayjs from 'dayjs';
 import Util from '../../classes/Utils';
 import { IAlertMessage } from '../../interfaces/IGeneral';
 import { Alert } from '../../components/alert';
+import { BaseTable } from '../../components/baseTable';
 
 const windowWidth = Dimensions.get('window').width;
 
 export function Acertos(props: IAcertos) {
     const navigation = useNavigation();
     const [logged, setLogged] = useState<any>({ id: 0, name: "", token: "" });
-    const tableTitles:ITableTitles[] = [
-        {name: "Nº Reserva", colspan: 1}, 
-        {name: "Val", colspan: 1},
-        {name: "Data", colspan: 1}, 
-        {name: "", colspan: 0}];
+    const tableTitles: ITableTitles[] = [
+        { title: "Nº Reserva", colspan: 1 },
+        { title: "Val", colspan: 1 },
+        { title: "Data", colspan: 1 },
+        { title: "", colspan: 0 }];
 
     const [alert, setAlert] = useState<IAlertMessage>({ type: "", msg: "" });
     const [loading, setLoading] = useState<boolean>(true);
 
-    const [acertos, setAcertos] = useState<IAcerto[]>([]);
+    const [items, setItems] = useState<any[][]>([]);
 
-    let tableWidth = 0;
 
-    tableTitles.map((title:ITableTitles) => {
-        if (title.colspan) {
-            tableWidth += title.colspan * 100;
-        } else {
-            tableWidth += 100;
-        }
-
-    })
-    if (tableWidth < windowWidth) {
-        const lastIndex = tableTitles[tableTitles.length-1];
-
-        tableTitles[tableTitles.length-1].width = (lastIndex && lastIndex.colspan ? lastIndex.colspan * 100 : 0) + (windowWidth-tableWidth) 
-    }
-    
-    
     useEffect(() => {
         (async () => {
             const log = await Util.getStorageItem("login");
@@ -63,7 +48,12 @@ export function Acertos(props: IAcertos) {
             }
 
             setLoading(false);
-            setAcertos(response);
+            setItems(response.map((item, itemIndex) => ([
+                { value: item.nota_fiscal, type: "string" },
+                { value: item.total, type: "money" },
+                { value: item.lancamento, type: "date" },
+                { value: "Realizar Acerto", type: "link", link: { screen: "Acertos_Detalhes", params: { chave_mov: item.chave } }, colspan: 0 },
+            ])));
         })();
     }, [])
 
@@ -82,21 +72,10 @@ export function Acertos(props: IAcertos) {
             <Header title="Acertos" navigation={navigation} />
             <Scrollable>
                 <Scrollable horizontal>
-                    <Table background='white'>
-                        <Row>
-                            {tableTitles.map((title, titleIndex) => (
-                                <TableTitle colSpan={title.colspan} key={titleIndex}><TableTitleText>{title.name}</TableTitleText></TableTitle>
-                            ))}
-                        </Row>
-                        {acertos.map((acerto, acertoIndex) => (
-                            <Row key={acertoIndex}>
-                                <Cell><CellText>{acerto.nota_fiscal}</CellText></Cell>
-                                <Cell><CellText>R${Util.formatMoney(acerto.total)}</CellText></Cell>
-                                <Cell><CellText>{dayjs(acerto.lancamento).format("DD/MM/YYYY")}</CellText></Cell>
-                                <Cell><CellText><Link style={{ textAlign: "center", minWidth: 50, color: "blue", textDecorationLine: "underline" }} to={{ screen: "Acertos_Detalhes", params: { chave_mov: acerto.chave } }}>Realizar Acerto</Link></CellText></Cell>
-                            </Row>
-                        ))}
-                    </Table>
+                    <BaseTable
+                        itens={items}
+                        titles={tableTitles}
+                    />
                 </Scrollable>
             </Scrollable>
         </Page >
