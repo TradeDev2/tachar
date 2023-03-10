@@ -504,6 +504,49 @@ export const AlertMessage = styled(Text) <IStyledProps>`
 `;
 //
 
+//Catalogo
+export const DropdownButton = styled(TouchableOpacity)`
+    padding: 10px;
+`;
+
+export const DropdownBroadView = styled(View)`
+    width: ${windowWidth}px;
+    display: flex;
+    margin-bottom: 10; 
+    justify-content: center;
+    align-items: center; 
+`;
+
+export const DropdownView = styled(View)`
+    width: ${windowWidth - 20};
+    background-color: white;
+`; 
+
+export const DropdownText = styled(Text)`
+    color: #232323;
+    text-align: center;
+    font-size: 18px;
+`;
+
+export const DropdownItemView = styled(View)`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+`;
+
+export const DropdownItemButton = styled(TouchableOpacity)`
+    border: 1px solid #cccccc;
+    width: ${windowWidth - 20}px;
+    padding: 5px 0px 5px 0px;
+    `;
+    
+    export const DropdownItemText = styled(Text)`
+    text-align: center;
+    font-size: 20px;
+`;
+//
+
 //Utils
 export const CenterView = styled(View) <IStyledProps>`
     width: 100%;
@@ -513,7 +556,14 @@ export const CenterView = styled(View) <IStyledProps>`
     align-items: center;
 `;
 
+export const PadBottomView = styled(View)<IStyledProps>`
+    margin-bottom: 20;
+`;
+
 export const BaseTouchable = styled(TouchableWithoutFeedback) <IStyledProps>`
+`;
+
+export const BaseTouchableAnimated = styled(TouchableOpacity) <IStyledProps>`
 `;
 
 export const Table = styled(View)<IStyledProps>`

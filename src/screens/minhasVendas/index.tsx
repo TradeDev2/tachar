@@ -2,7 +2,7 @@ import React, { type PropsWithChildren, useState, useEffect } from 'react';
 import { View, Text, Dimensions } from 'react-native';
 import { Header } from '../../components/header';
 import { FixatedStatusBar } from '../../components/fixatedStatusBar';
-import { Input, Page, Scrollable, Select } from '../../styled';
+import { BaseTouchableAnimated, CenterView, Input, Page, Scrollable, Select } from '../../styled';
 import { IMinhas_Vendas } from './IMinhas_Vendas';
 import { useNavigation } from '@react-navigation/native';
 import Loading from '../../components/loading';
@@ -10,7 +10,7 @@ import Util from '../../classes/Utils';
 import { IAlertMessage, ITableTitles } from '../../interfaces/IGeneral';
 import { Alert } from '../../components/alert';
 import Rest from '../../classes/Rest';
-import dayjs, { locale } from 'dayjs';
+import dayjs from 'dayjs';
 import { BaseTable } from '../../components/baseTable';
 require('dayjs/locale/pt')
 
@@ -73,6 +73,21 @@ export function Minhas_Vendas(props: IMinhas_Vendas) {
         })();
     }, [])
 
+    const pesquisaVendas = async () => {
+        const query = `${produtoFiltro ? `produtos.descricao=${produtoFiltro}` : ""}${codigoFiltro ? `${produtoFiltro ? "&" : ""}codigo=${codigoFiltro}` : ""}${dataFiltro && dataFiltro != "TODAS" ? `${produtoFiltro || codigoFiltro ? "&" : ""}movimentacao.emissao=>=${Util.findDate(dataFiltro)}` : ""}`;
+        
+        setLoading(true);
+        const vend = await Rest.getBase(`movitens/vendas/${logged.id}?${query}`, logged.token);
+        
+        console.log(vend);
+        setItems(vend.map((ven, venIndex) => ([
+            { value: ven.descricao, type: "string", colspan: 1.2 },
+            { value: ven.emissao, type: "date" },
+            { value: ven.valor_unitario, type: "money", colspan: 0.7 },
+        ])))
+        setLoading(false);
+    }
+
     if (loading) {
         return (
             <Loading />
@@ -90,27 +105,26 @@ export function Minhas_Vendas(props: IMinhas_Vendas) {
             <View style={{ marginLeft: 5, width: windowWidth - 10, display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                 <Input
                     bRadius={1}
-                    value={codigoFiltro}
-                    onChangeText={(e: string) => setCodigoFiltro(e)}
-                    placeholder={"Código"}
-                    width={(windowWidth / 3) - 5}
-                />
-                <Input
-                    bRadius={1}
                     value={produtoFiltro}
                     onChangeText={(e: string) => setProdutoFiltro(e)}
                     placeholder={"Produto"}
-                    width={(windowWidth / 3) - 5}
+                    width={(windowWidth / 2) - 15}
+                    height={40}
                 />
                 <Select
                     data={[...[...Array(6)].map((e, index) => (dayjs().locale("pt-br").subtract(index, "month").format("MMM YYYY"))), "TODAS"]}
                     onSelect={(e: string) => setDataFiltro(e)}
                     defaultButtonText={"Data"}
-                    buttonStyle={{ width: (windowWidth / 3) - 5, backgroundColor: "white" }}
+                    buttonStyle={{ width: (windowWidth / 2) - 15, backgroundColor: "white", height: 40 }}
                 />
+
             </View>
 
-            <Scrollable>
+            <CenterView>
+                <BaseTouchableAnimated onPress={() => pesquisaVendas()}><Text style={{padding: 8, backgroundColor: "#CBCBCB", color: "#343434", width: (windowWidth/3)-25, marginTop: 5, textAlign: "center"}}>Filtrar</Text></BaseTouchableAnimated>
+            </CenterView>
+
+            <Scrollable style={{marginTop:5}}>
                 <Scrollable horizontal>
                     <BaseTable
                         itens={items}

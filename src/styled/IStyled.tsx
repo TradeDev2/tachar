@@ -3,6 +3,7 @@ export interface IStyledProps {
     letter?: string,
     item?: string,
     width?: number,
+    height?: number,
     mgTop?: number,
     mgBottom?: number,
     mgLeft?: number,

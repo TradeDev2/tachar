@@ -43,4 +43,9 @@ export default class Util {
 
         return formattedValue;
     }
+
+    static findDate(date:string) {
+        const meses = [{name: "jan", number: '01'}, {name: "feb", number: '02'}, {name: "mar", number: '03'}, {name: "abr", number: "04"}, {name: "mai", number: "05"}, {name: "jun", number: "06"}, {name: "jul", number: "7"}, {name: "ago", number: "08"}, {name: "set", number: "09"}, {name: "oct", number: "10"}, {name: "nov", number: "11"}, {name: "dec", number: "12"}]
+        return `${date.substring(4,8)}-${meses.find((mes) => mes.name == date.substring(0,3))?.number}-01`;
+    }
 }
